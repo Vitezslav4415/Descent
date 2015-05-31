@@ -12,10 +12,11 @@ body {
 
 .menu {
 	position: fixed;
-	height: 20px;
+	height: 50px;
 	width: 100%;
 	background: white;
-	opacity: 0.5;
+	//opacity: 0.5;
+	opacity: 1;
 	padding: 10px;
 	z-index: 1000;
 	box-sizing: border-box;
@@ -23,6 +24,16 @@ body {
 
 .menu.active {
 	height: 100%;
+}
+
+.menu .show-menu,
+.menu.active .hide-menu {
+	display: block;
+}
+
+.menu.active .show-menu,
+.menu .hide-menu {
+	display: none;
 }
 
 .menu-item {
@@ -44,4 +55,16 @@ body {
 
 .figures {
 	z-index: 200;
+}
+
+.oneCell,
+.twoCells,
+.threeCells {
+	display: none;
+}
+
+.showOneCell .oneCell,
+.showTwoCells .twoCells,
+.showThreeCells .threeCells {
+	display: block;
 }

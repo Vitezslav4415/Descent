@@ -9,6 +9,9 @@
 	</head>
 	<body>
 		<div class="menu">
+			<button type="button" class="btn btn-default show-menu" onclick="toggleMenu();">Show menu</button>
+			<button type="button" class="btn btn-default hide-menu" onclick="toggleMenu();">Hide menu</button>
+		
 			<div class="menu-item">
 				<div>Map</div>
 				<div class="input-group" id="map-control">
@@ -17,6 +20,9 @@
 					<span class="input-group-addon">Section position (top left corner)</span>
 					<span class="input-group-addon"></span>
 				</div>
+				<select class="map-select showOneCell showTwoCells">
+					
+				</select>
 				
 				<table class="map-control">
 					<thead>
