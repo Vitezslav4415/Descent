@@ -9,61 +9,59 @@
 		<script src="scripts/main.js"></script>
 	</head>
 	<body>
-		<div class="menu">
-			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#map" aria-controls="home" role="tab" data-toggle="tab">Map</a></li>
-					<li role="presentation"><a href="#map-controls" aria-controls="home" role="tab" data-toggle="tab">Map Controls</a></li>
-					<li role="presentation"><a href="#monsters" aria-controls="profile" role="tab" data-toggle="tab">Monsters</a></li>
-					<li role="presentation"><a href="#heroes" aria-controls="messages" role="tab" data-toggle="tab">Heroes</a></li>
-					<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
-				</ul>
-				
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="map">
-						<div class="background">
-							<div class="map"></div>
-							<div class="figures"></div>
-						</div>
+		<div role="tabpanel">
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="active"><a href="#map" aria-controls="home" role="tab" data-toggle="tab">Map</a></li>
+				<li role="presentation"><a href="#map-controls" aria-controls="home" role="tab" data-toggle="tab">Map Controls</a></li>
+				<li role="presentation"><a href="#monsters" aria-controls="profile" role="tab" data-toggle="tab">Monsters</a></li>
+				<li role="presentation"><a href="#heroes" aria-controls="messages" role="tab" data-toggle="tab">Heroes</a></li>
+				<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+			</ul>
+			
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active" id="map">
+					<div class="background">
+						<div class="map"></div>
+						<div class="figures"></div>
 					</div>
-					<div role="tabpanel" class="tab-pane" id="map-controls">
-						<div class="input-group" id="map-control">
-							<span class="input-group-addon">Section title</span>
-							<span class="input-group-addon">Section rotation</span>
-							<span class="input-group-addon">Section position (top left corner)</span>
-							<span class="input-group-addon"></span>
-						</div>
-					</div>
-					<div role="tabpanel" class="tab-pane" id="monsters">
-						<div class="select-row">
-							<div class="btn-group select-monster">
-								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-									<span class="monster-title">Select monster</span> <span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" role="menu">
-								</ul>
-							</div>
-							
-							<div class="btn-group select-x">
-								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-									Select X <span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" role="menu">
-								</ul>
-							</div>
-							
-							<div class="btn-group select-y">
-								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-									Select Y <span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" role="menu">
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div role="tabpanel" class="tab-pane" id="heroes">Under construction</div>
-					<div role="tabpanel" class="tab-pane" id="settings">Under construction</div>
 				</div>
+				<div role="tabpanel" class="tab-pane" id="map-controls">
+					<div class="input-group" id="map-control">
+						<span class="input-group-addon">Section title</span>
+						<span class="input-group-addon">Section rotation</span>
+						<span class="input-group-addon">Section position (top left corner)</span>
+						<span class="input-group-addon"></span>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="monsters">
+					<div class="select-row">
+						<div class="btn-group select-monster">
+							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								<span class="monster-title">Select monster</span> <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+							</ul>
+						</div>
+						
+						<div class="btn-group select-x">
+							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								Select X <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+							</ul>
+						</div>
+						
+						<div class="btn-group select-y">
+							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								Select Y <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="heroes">Under construction</div>
+				<div role="tabpanel" class="tab-pane" id="settings">Under construction</div>
 			</div>
 		</div>
 	</body>
