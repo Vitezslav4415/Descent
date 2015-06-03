@@ -34,13 +34,30 @@ function addOption(title, value, optionClass) {
 
 function updateOption(element, value) {
 	var container = $(element).parents('.select-row');
-	if (value == '') { //monster select
+	if (value == '' || value == 'Clear') { //monster select or clearing cordinates
 		monsterTitle = $(element).html();
-		$(container).find('.monster-title').html(monsterTitle);
+		var xYSelects = $(container).find('.select-x, .select-y');
+		
+		if (value == '') {
+			container.find('.monster-title').html(monsterTitle + ' ');
+			container.find('input[name="monster-title"]').attr('value',monsterTitle);
+		} else {
+			var otherElementThanCleared;
+			if ($(element).parents('.btn-group').hasClass('select-x')) {
+				otherElementThanCleared = container.find('.select-y');
+				container.find('.x-title').html('Select X coordinate' + ' ');
+			} else {
+				otherElementThanCleared = container.find('.select-x');
+				container.find('.y-title').html('Select Y coordinate' + ' ');
+			}
+			xYSelects = otherElementThanCleared;
+			monsterTitle = container.find('.monster-title').html();
+			monsterTitle = monsterTitle.substring(0, monsterTitle.length - 1);
+		}
+		
 		var firstClass = SHOWING_CLASSES[monsterWidth[monsterTitle]];
 		var secondClass = SHOWING_CLASSES[monsterHeight[monsterTitle]];
-		var xYSelects = $(container).find('.select-x, .select-y');
-		xYSelects.removeClass(SHOWING_CLASSES[1] + ' ' + SHOWING_CLASSES[2] + ' ' + SHOWING_CLASSES[3]);
+		xYSelects.removeClass(SHOWING_CLASSES[1] + ' ' + SHOWING_CLASSES[2] + ' ' + SHOWING_CLASSES[3] + ' squared');
 		xYSelects.addClass(firstClass);
 		if (firstClass == secondClass) {
 			xYSelects.addClass('squared');
@@ -50,11 +67,19 @@ function updateOption(element, value) {
 	} else { //coordinate select
 		var selectedSize = value.charAt(0);
 		var selectedCooedinate = value.substr(1);
-		if (!$(this).hasClass('squared')) { //FIX!
-			if ($(this).parents('.btn-group').hasClass('select-x')) {
-				$(container).find('.select-y').removeClass(SHOWING_CLASSES[selectedSize]);
-			} else {
-				$(container).find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
+		var parent = $(element).parents('.btn-group');
+		
+		if (parent.hasClass('select-x')) {
+			container.find('input[name="monster-x"]').attr('value',selectedCooedinate);
+			container.find('.x-title').html($(element).html() + ' ');
+			if (!parent.hasClass('squared')) {
+				container.find('.select-y').removeClass(SHOWING_CLASSES[selectedSize]);
+			}
+		} else {
+			container.find('.y-title').html($(element).html() + ' ');
+			container.find('input[name="monster-y"]').attr('value',selectedCooedinate);
+			if (!parent.hasClass('squared')) {
+				container.find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
 			}
 		}
 	}
@@ -69,7 +94,7 @@ function getAlphabetChar(number) {
 }
 
 function createXSelectContent () {
-	var html = '';
+	var html = addOption('Clear', 'Clear', '');
 	for (i = 1; i <= mapWidth; i++) {
 		html += addOption(i.toString(), '1' + i.toString(), 'oneCell');
 		if (i <= mapWidth-1)
@@ -81,7 +106,7 @@ function createXSelectContent () {
 }
 
 function createYSelectContent () {
-	var html = '';
+	var html = addOption('Clear', 'Clear', '');
 	for (i = 1; i <= mapHeight; i++) {
 		html += addOption(getAlphabetChar(i-1), '1' + i.toString(), 'oneCell');
 		if (i <= mapHeight-1)
@@ -100,20 +125,40 @@ function createMonsterSelectContent () {
 	return html;
 }
 
-function addMonsterLine() {
+function addMonsterLine(element) {
+	var monsterLine = $('<div>').attr('id','monster' + monsterNumber.toString());
+	monsterNumber += 1;
+	monsterLine.addClass('select-row');
+	monsterLine.append(createInputSelect('Select monster', 'monster-title', 'select-monster'));
+	monsterLine.append(createInputSelect('Select X coordinate', 'x-title', 'select-x'));
+	monsterLine.append(createInputSelect('Select Y coordinate', 'y-title', 'select-y'));
+	monsterLine.append($('<input type="hidden" name="monster-title" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="monster-x" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="monster-y" value=""/>'));
 	
+	monsterLine.find('.select-monster ul').append(createMonsterSelectContent());
+	monsterLine.find('.select-x ul').append(createXSelectContent());
+	monsterLine.find('.select-y ul').append(createYSelectContent());
+	$(element).append(monsterLine);
+}
+
+function createInputSelect(title, titleClass, additionalClass) {
+	var select = $('<div>').addClass('btn-group').addClass(additionalClass);
+	var button = $('<button>').attr('type','button').addClass('btn btn-default dropdown-toggle').attr('data-toggle','dropdown').attr('aria-expanded','false');
+	button.append($('<span>' + title + ' </span>').addClass(titleClass)).append($('<span>').addClass('caret'));
+	select.append(button).append($('<ul>').addClass('dropdown-menu').attr('role','menu'));
+	return select;
 }
 
 $(function() {
-
-	var monsterNumber = 1;
 	adjustMonsterParams();
-	$('.select-monster ul').append(createMonsterSelectContent());
+	addMonsterLine($('#monsters'));
+	/*$('.select-monster ul').append(createMonsterSelectContent());
 	$('.select-x ul').append(createXSelectContent());
-	$('.select-y ul').append(createYSelectContent());
+	$('.select-y ul').append(createYSelectContent());*/
 });
 
 $('.nav-tabs a').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
+	e.preventDefault()
+	$(this).tab('show')
 })

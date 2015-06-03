@@ -51,3 +51,5 @@ var SHOWING_CLASSES = [];
 SHOWING_CLASSES[1] = 'showOneCell';
 SHOWING_CLASSES[2] = 'showTwoCells';
 SHOWING_CLASSES[3] = 'showThreeCells';
+
+var monsterNumber = 1;

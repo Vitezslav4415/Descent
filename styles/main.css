@@ -11,16 +11,9 @@ body {
 	min-height: 600px;
 }
 
-.menu {
-	position: fixed;
-	height: 50px;
-	width: 100%;
+body {
 	background: white;
-	//opacity: 0.5;
-	opacity: 1;
-	padding: 10px;
-	z-index: 1000;
-	box-sizing: border-box;
+	padding: 20px;
 }
 
 .menu.active {
