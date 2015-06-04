@@ -28,27 +28,41 @@ function addOptionOld(title, value, optionClass) {
 	return '<option class="' + optionClass + '" value="' + value + '">' + title + '</option>';
 }
 
-function addOption(title, value, optionClass) {
-	return '<li class="' + optionClass + '"><a href="#" onclick="updateOption(this, \'' + value + '\')">' + title + '</a></li>';
+function addOption(title, value, optionClass, functionTitle) {
+	return '<li class="' + optionClass + '"><a href="#" onclick="' + functionTitle + '(this, \'' + value + '\')">' + title + '</a></li>';
 }
 
-function updateOption(element, value) {
+function updateMonster(element, value) {
+	updateOption(element, value, true);
+}
+
+function updateCoordinate(element, value) {
+	updateOption(element, value, false);
+}
+
+function updateOption(element, value, isMonster) {
 	var container = $(element).parents('.select-row');
-	if (value == '' || value == 'Clear') { //monster select or clearing cordinates
-		monsterTitle = $(element).html();
+	if (isMonster || value == 'Clear') { //monster select or clearing cordinates
+		monsterTitle = value;
 		var xYSelects = $(container).find('.select-x, .select-y');
 		
-		if (value == '') {
+		if (isMonster) {
 			container.find('.monster-title').html(monsterTitle + ' ');
 			container.find('input[name="monster-title"]').attr('value',monsterTitle);
+			container.find('.x-title').html('Select X coordinate' + ' ');
+			container.find('.y-title').html('Select Y coordinate' + ' ');
+			container.find('input[name="monster-x"]').attr('value','');
+			container.find('input[name="monster-y"]').attr('value','');
 		} else {
 			var otherElementThanCleared;
 			if ($(element).parents('.btn-group').hasClass('select-x')) {
 				otherElementThanCleared = container.find('.select-y');
 				container.find('.x-title').html('Select X coordinate' + ' ');
+				container.find('input[name="monster-x"]').attr('value','');
 			} else {
 				otherElementThanCleared = container.find('.select-x');
 				container.find('.y-title').html('Select Y coordinate' + ' ');
+				container.find('input[name="monster-y"]').attr('value','');
 			}
 			xYSelects = otherElementThanCleared;
 			monsterTitle = container.find('.monster-title').html();
@@ -85,6 +99,10 @@ function updateOption(element, value) {
 	}
 }
 
+function removeRow(element) {
+	$(element).parents('.select-row').remove();
+}
+
 function getAlphabetChar(number) {
 	result = '';
 	if (number > 26) {
@@ -94,25 +112,25 @@ function getAlphabetChar(number) {
 }
 
 function createXSelectContent () {
-	var html = addOption('Clear', 'Clear', '');
+	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
 	for (i = 1; i <= mapWidth; i++) {
-		html += addOption(i.toString(), '1' + i.toString(), 'oneCell');
+		html += addOption(i.toString(), '1' + i.toString(), 'oneCell', 'updateCoordinate');
 		if (i <= mapWidth-1)
-			html += addOption(i.toString() + '-' + (i+1).toString(), '2' + i.toString(), 'twoCells');
+			html += addOption(i.toString() + '-' + (i+1).toString(), '2' + i.toString(), 'twoCells', 'updateCoordinate');
 		if (i <= mapWidth-2)
-			html += addOption(i.toString() + '-' + (i+2).toString(), '3' + i.toString(), 'threeCells');
+			html += addOption(i.toString() + '-' + (i+2).toString(), '3' + i.toString(), 'threeCells', 'updateCoordinate');
 	}
 	return html;
 }
 
 function createYSelectContent () {
-	var html = addOption('Clear', 'Clear', '');
+	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
 	for (i = 1; i <= mapHeight; i++) {
-		html += addOption(getAlphabetChar(i-1), '1' + i.toString(), 'oneCell');
+		html += addOption(getAlphabetChar(i-1), '1' + i.toString(), 'oneCell', 'updateCoordinate');
 		if (i <= mapHeight-1)
-			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i), '2' + i.toString(), 'twoCells');
+			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i), '2' + i.toString(), 'twoCells', 'updateCoordinate');
 		if (i <= mapHeight-2)
-			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i+1), '3' + i.toString(), 'threeCells');
+			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i+1), '3' + i.toString(), 'threeCells', 'updateCoordinate');
 	}
 	return html;
 }
@@ -120,26 +138,30 @@ function createYSelectContent () {
 function createMonsterSelectContent () {
 	var html = '';
 	for (i = 0; i < MONSTERS_LIST.length; i++) {
-		html += addOption(MONSTERS_LIST[i][0], '', '');
+		html += addOption(MONSTERS_LIST[i][0] + ' leader', MONSTERS_LIST[i][0], '', 'updateMonster');
+		html += addOption(MONSTERS_LIST[i][0] + ' minion', MONSTERS_LIST[i][0], '', 'updateMonster');
 	}
 	return html;
 }
 
-function addMonsterLine(element) {
+function addMonsterLine() {
 	var monsterLine = $('<div>').attr('id','monster' + monsterNumber.toString());
 	monsterNumber += 1;
 	monsterLine.addClass('select-row');
 	monsterLine.append(createInputSelect('Select monster', 'monster-title', 'select-monster'));
 	monsterLine.append(createInputSelect('Select X coordinate', 'x-title', 'select-x'));
 	monsterLine.append(createInputSelect('Select Y coordinate', 'y-title', 'select-y'));
+	monsterLine.append($('<input type="text" name="monster-hp" class="form-control" placeholder="Set HP" value=""/>'));
+	monsterLine.append($('<input type="text" name="monster-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
 	monsterLine.append($('<input type="hidden" name="monster-title" value=""/>'));
+	monsterLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	monsterLine.append($('<input type="hidden" name="monster-x" value=""/>'));
 	monsterLine.append($('<input type="hidden" name="monster-y" value=""/>'));
 	
 	monsterLine.find('.select-monster ul').append(createMonsterSelectContent());
 	monsterLine.find('.select-x ul').append(createXSelectContent());
 	monsterLine.find('.select-y ul').append(createYSelectContent());
-	$(element).append(monsterLine);
+	$('#monsters-container').append(monsterLine);
 }
 
 function createInputSelect(title, titleClass, additionalClass) {
@@ -152,7 +174,7 @@ function createInputSelect(title, titleClass, additionalClass) {
 
 $(function() {
 	adjustMonsterParams();
-	addMonsterLine($('#monsters'));
+	addMonsterLine();
 	/*$('.select-monster ul').append(createMonsterSelectContent());
 	$('.select-x ul').append(createXSelectContent());
 	$('.select-y ul').append(createYSelectContent());*/
