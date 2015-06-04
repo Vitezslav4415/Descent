@@ -70,3 +70,28 @@ body {
 #map {
 	padding: 0;
 }
+
+.select-row {
+	margin-bottom: 10px;
+}
+
+.select-row > input[type="text"] {
+	display: inline-block;
+	width: 104px;
+	position: relative;
+	top: 1px;
+}
+
+.select-row > .btn-group,
+.select-row > input[type="text"],
+.select-row > button {
+	margin-right: 15px;
+}
+
+.select-monster button {
+	min-width: 140px;
+}
+
+.select-x > button, .select-y > button {
+	min-width: 161px;
+}
