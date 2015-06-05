@@ -43,12 +43,13 @@ function updateCoordinate(element, value) {
 function updateOption(element, value, isMonster) {
 	var container = $(element).parents('.select-row');
 	if (isMonster || value == 'Clear') { //monster select or clearing cordinates
-		monsterTitle = value;
+		monsterTitle = $(element).html();
+		container.find('input[name="leader"]').attr('value', monsterTitle.indexOf('leader') > -1);
 		var xYSelects = $(container).find('.select-x, .select-y');
 		
 		if (isMonster) {
 			container.find('.monster-title').html(monsterTitle + ' ');
-			container.find('input[name="monster-title"]').attr('value',monsterTitle);
+			container.find('input[name="monster-title"]').attr('value',value);
 			container.find('.x-title').html('Select X coordinate' + ' ');
 			container.find('.y-title').html('Select Y coordinate' + ' ');
 			container.find('input[name="monster-x"]').attr('value','');
@@ -65,12 +66,12 @@ function updateOption(element, value, isMonster) {
 				container.find('input[name="monster-y"]').attr('value','');
 			}
 			xYSelects = otherElementThanCleared;
-			monsterTitle = container.find('.monster-title').html();
-			monsterTitle = monsterTitle.substring(0, monsterTitle.length - 1);
+			value = container.find('.monster-title').html();
+			value = value.substring(0, value.length - 1);
 		}
 		
-		var firstClass = SHOWING_CLASSES[monsterWidth[monsterTitle]];
-		var secondClass = SHOWING_CLASSES[monsterHeight[monsterTitle]];
+		var firstClass = SHOWING_CLASSES[monsterWidth[value]];
+		var secondClass = SHOWING_CLASSES[monsterHeight[value]];
 		xYSelects.removeClass(SHOWING_CLASSES[1] + ' ' + SHOWING_CLASSES[2] + ' ' + SHOWING_CLASSES[3] + ' squared');
 		xYSelects.addClass(firstClass);
 		if (firstClass == secondClass) {
@@ -85,6 +86,7 @@ function updateOption(element, value, isMonster) {
 		
 		if (parent.hasClass('select-x')) {
 			container.find('input[name="monster-x"]').attr('value',selectedCooedinate);
+			container.find('input[name="monster-x-size"]').attr('value',selectedSize);
 			container.find('.x-title').html($(element).html() + ' ');
 			if (!parent.hasClass('squared')) {
 				container.find('.select-y').removeClass(SHOWING_CLASSES[selectedSize]);
@@ -92,6 +94,7 @@ function updateOption(element, value, isMonster) {
 		} else {
 			container.find('.y-title').html($(element).html() + ' ');
 			container.find('input[name="monster-y"]').attr('value',selectedCooedinate);
+			container.find('input[name="monster-y-size"]').attr('value',selectedSize);
 			if (!parent.hasClass('squared')) {
 				container.find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
 			}
@@ -156,7 +159,10 @@ function addMonsterLine() {
 	monsterLine.append($('<input type="hidden" name="monster-title" value=""/>'));
 	monsterLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	monsterLine.append($('<input type="hidden" name="monster-x" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="monster-x-size" value=""/>'));
 	monsterLine.append($('<input type="hidden" name="monster-y" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="monster-y-size" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="leader" value=""/>'));
 	
 	monsterLine.find('.select-monster ul').append(createMonsterSelectContent());
 	monsterLine.find('.select-x ul').append(createXSelectContent());
@@ -172,15 +178,42 @@ function createInputSelect(title, titleClass, additionalClass) {
 	return select;
 }
 
+function monster(element) {
+	var container = $(element);
+	var monster = {};
+	monster.title = container.find('[name="monster-title"]').val();
+	monster.leader = container.find('[name="leader"]').val();
+	monster.x = container.find('[name="monster-x"]').val();
+	monster.y = container.find('[name="monster-y"]').val();
+	monster.vertical = container.find('[name="monster-x-size"]').val() < container.find('[name="monster-y-size"]').val();
+	monster.hp = container.find('[name="monster-hp"]').val();
+	monster.stamina = container.find('[name="monster-stamina"]').val();
+	return monster;
+}
+
+function populate() {
+	var monsterRows = $('#monsters .select-row');
+	options.monsters = [];
+	for (i = 0; i < monsterRows.length; i++) {
+		options.monsters.push(monster(monsterRows[i]));
+	}
+}
+
 $(function() {
 	adjustMonsterParams();
 	addMonsterLine();
 	/*$('.select-monster ul').append(createMonsterSelectContent());
 	$('.select-x ul').append(createXSelectContent());
 	$('.select-y ul').append(createYSelectContent());*/
-});
 
-$('.nav-tabs a').click(function (e) {
-	e.preventDefault()
-	$(this).tab('show')
-})
+	$('.nav-tabs a').click(function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+	})
+
+	$('.nav-tabs #map').click(function (e) {
+		e.preventDefault();
+		populate();
+		$(this).tab('show');
+	})
+});
