@@ -47,6 +47,54 @@ var MONSTERS_LIST = [
 	['Zombie',1,1,false]
 ]
 
+var MONSTERS_HP = [
+	['Arachyura',5,7,7,9],
+	['Bandit',4,5,6,7],
+	['Bane Spider',4,7,6,9],
+	['Barghest',4,6,6,8],
+	['Beastman',4,5,5,6],
+	['Blood Ape',5,7,7,9],
+	['Carrion Drake',6,8,7,10],
+	['Cave Spider',3,5,5,7],
+	['Changeling',4,6,6,8],
+	['Crypt Dragon',5,7,7,10],
+	['Dark Priest',2,5,7,9],
+	['Deep Elf',7,9,8,10],
+	['Demon Lord',6,9,8,12],
+	['Elemental',4,6,8,10],
+	['Ettin',5,8,7,9],
+	['Ferrox',4,5,5,8],
+	['Fire Imps',2,4,4,6],
+	['Flesh Moulder',4,5,5,7],
+	['Giant',10,12,12,15],
+	['Goblin Archer',2,4,4,6],
+	['Goblin Witcher',3,5,6,8],
+	['Harpy',3,5,4,6],
+	['Hellhound',3,6,5,8],
+	['Hybrid Sentinel',5,8,6,9],
+	['Ice Wyrm',7,9,11,14],
+	['Ironbound',8,10,10,12],
+	['Kobold',2,4,4,6],
+	['Lava Beetle',3,5,5,7],
+	['Manticore',5,7,7,9],
+	['Medusa',4,6,6,9],
+	['Merriod',5,7,7,9],
+	['Naga',4,5,6,7],
+	['Ogre',6,8,9,12],
+	['Rat Swarm',4,5,5,6],
+	['Razorwing',4,6,7,9],
+	['Shade',2,4,4,6],
+	['Shadow Dragon',6,9,8,10],
+	['Skeleton Archer',2,5,4,8],
+	['Sorcerer',3,5,5,8],
+	['Troll',8,10,10,13],
+	['Volucrix Reaver',3,5,4,6],
+	['Wendigo',4,7,7,10],
+	['Wraith',5,7,6,8],
+	['Ynfernael Hulk',8,9,9,10],
+	['Zombie',3,6,5,9]
+]
+
 var SHOWING_CLASSES = [];
 SHOWING_CLASSES[1] = 'showOneCell';
 SHOWING_CLASSES[2] = 'showTwoCells';

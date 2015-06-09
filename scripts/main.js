@@ -192,6 +192,11 @@ function monster(element) {
 }
 
 function populate() {
+	collectData();
+	constructMapFromConfig();
+}
+
+function collectData() {
 	var monsterRows = $('#monsters .select-row');
 	options.monsters = [];
 	for (i = 0; i < monsterRows.length; i++) {
