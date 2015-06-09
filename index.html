@@ -35,6 +35,14 @@
 				</div>
 				<div role="tabpanel" class="tab-pane active" id="monsters">
 					<div id="monsters-container"></div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="act" value="one" id="actOne" checked onclick="adjustAct();"> Act One Monsters
+						</label>
+						<label>
+							<input type="radio" name="act" value="two" id="actTwo" onclick="adjustAct();"> Act Two Monsters
+						</label>
+					</div>
 					<button type="button" class="btn btn-success" aria-expanded="false" onclick="addMonsterLine();">Add row</button>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="heroes">Under construction</div>

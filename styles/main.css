@@ -95,3 +95,7 @@ body {
 .select-x > button, .select-y > button {
 	min-width: 161px;
 }
+
+#monsters .radio label {
+	display: block;
+}

@@ -5,6 +5,11 @@ function toggleMenu() {
 var monsterWidth = [];
 var monsterHeight = [];
 var monsterRanged = [];
+var monsterMinionHpActOne = [];
+var monsterLeaderHpActOne = [];
+var monsterMinionHpActTwo = [];
+var monsterLeaderHpActTwo = [];
+var actOne = true;
 
 var mapWidth = 26;
 var mapHeight = 26;
@@ -15,6 +20,13 @@ function adjustMonsterParams() {
 		monsterWidth[monster[0]] = monster[1];
 		monsterHeight[monster[0]] = monster[2];
 		monsterRanged[monster[0]] = monster[3];
+	}
+	for (i = 0 ; i < MONSTERS_HP.length; i++) {
+		var monster = MONSTERS_HP[i];
+		monsterMinionHpActOne[monster[0]] = monster[1];
+		monsterLeaderHpActOne[monster[0]] = monster[2];
+		monsterMinionHpActTwo[monster[0]] = monster[3];
+		monsterLeaderHpActTwo[monster[0]] = monster[4];
 	}
 }
 
@@ -48,12 +60,27 @@ function updateOption(element, value, isMonster) {
 		var xYSelects = $(container).find('.select-x, .select-y');
 		
 		if (isMonster) {
+			var monsterHp;
+			if (monsterTitle.indexOf('leader') > -1) {
+				if (actOne) {
+					monsterHp = monsterLeaderHpActOne[value];
+				} else {
+					monsterHp = monsterLeaderHpActTwo[value];
+				}
+			} else {
+			if (actOne) {
+					monsterHp = monsterMinionHpActOne[value];
+				} else {
+					monsterHp = monsterMinionHpActTwo[value];
+				}
+			}
 			container.find('.monster-title').html(monsterTitle + ' ');
 			container.find('input[name="monster-title"]').attr('value',value);
 			container.find('.x-title').html('Select X coordinate' + ' ');
 			container.find('.y-title').html('Select Y coordinate' + ' ');
 			container.find('input[name="monster-x"]').attr('value','');
 			container.find('input[name="monster-y"]').attr('value','');
+			container.find('input[name="monster-hp"]').val(monsterHp);
 		} else {
 			var otherElementThanCleared;
 			if ($(element).parents('.btn-group').hasClass('select-x')) {
@@ -155,7 +182,7 @@ function addMonsterLine() {
 	monsterLine.append(createInputSelect('Select X coordinate', 'x-title', 'select-x'));
 	monsterLine.append(createInputSelect('Select Y coordinate', 'y-title', 'select-y'));
 	monsterLine.append($('<input type="text" name="monster-hp" class="form-control" placeholder="Set HP" value=""/>'));
-	monsterLine.append($('<input type="text" name="monster-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
+	//monsterLine.append($('<input type="text" name="monster-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
 	monsterLine.append($('<input type="hidden" name="monster-title" value=""/>'));
 	monsterLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	monsterLine.append($('<input type="hidden" name="monster-x" value=""/>'));
@@ -202,6 +229,10 @@ function collectData() {
 	for (i = 0; i < monsterRows.length; i++) {
 		options.monsters.push(monster(monsterRows[i]));
 	}
+}
+
+function adjustAct() {
+	actOne = $('[name="act"]:checked').val() == 'one';
 }
 
 $(function() {
