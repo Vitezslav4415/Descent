@@ -10,6 +10,7 @@ var monsterLeaderHpActOne = [];
 var monsterMinionHpActTwo = [];
 var monsterLeaderHpActTwo = [];
 var actOne = true;
+var heroes = [];
 
 var mapWidth = 26;
 var mapHeight = 26;
@@ -129,6 +130,19 @@ function updateOption(element, value, isMonster) {
 	}
 }
 
+function updateHero(element, value) {
+	var container = $(element).parents('.select-row');
+
+	container.find('.hero-title').html(value + ' ');
+	container.find('input[name="hero-title"]').attr('value',value);
+	container.find('.x-title').html('Select X coordinate' + ' ');
+	container.find('.y-title').html('Select Y coordinate' + ' ');
+	container.find('input[name="hero-x"]').attr('value','');
+	container.find('input[name="hero-y"]').attr('value','');
+	container.find('input[name="hero-hp"]').val(heroes[value].hp);
+	container.find('input[name="hero-stamina"]').val(heroes[value].stamina);
+}
+
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
 }
@@ -141,25 +155,25 @@ function getAlphabetChar(number) {
 	return result += ALPHABET.charAt(number%26);
 }
 
-function createXSelectContent () {
+function createXSelectContent (oneCellOnly) {
 	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
 	for (i = 1; i <= mapWidth; i++) {
 		html += addOption(i.toString(), '1' + i.toString(), 'oneCell', 'updateCoordinate');
-		if (i <= mapWidth-1)
+		if (i <= mapWidth-1 && !oneCellOnly)
 			html += addOption(i.toString() + '-' + (i+1).toString(), '2' + i.toString(), 'twoCells', 'updateCoordinate');
-		if (i <= mapWidth-2)
+		if (i <= mapWidth-2 && !oneCellOnly)
 			html += addOption(i.toString() + '-' + (i+2).toString(), '3' + i.toString(), 'threeCells', 'updateCoordinate');
 	}
 	return html;
 }
 
-function createYSelectContent () {
+function createYSelectContent (oneCellOnly) {
 	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
 	for (i = 1; i <= mapHeight; i++) {
 		html += addOption(getAlphabetChar(i-1), '1' + i.toString(), 'oneCell', 'updateCoordinate');
-		if (i <= mapHeight-1)
+		if (i <= mapHeight-1 && !oneCellOnly)
 			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i), '2' + i.toString(), 'twoCells', 'updateCoordinate');
-		if (i <= mapHeight-2)
+		if (i <= mapHeight-2 && !oneCellOnly)
 			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i+1), '3' + i.toString(), 'threeCells', 'updateCoordinate');
 	}
 	return html;
@@ -174,27 +188,49 @@ function createMonsterSelectContent () {
 	return html;
 }
 
+function createHeroSelectContent () {
+	var html = '';
+		for (i = 0; i < HEROES_LIST.length; i++) {
+			html += addOption(HEROES_LIST[i][0] + ' ', HEROES_LIST[i][0], '', 'updateHero');
+		}
+	return html;
+}
+
+function addUnitLine(line, title) {
+	line.addClass('select-row');
+	line.append(createInputSelect('Select ' + title, title + '-title', 'select-' + title));
+	line.append(createInputSelect('Select X coordinate', 'x-title', 'select-x'));
+	line.append(createInputSelect('Select Y coordinate', 'y-title', 'select-y'));
+	line.append($('<input type="text" name="' + title + '-hp" class="form-control" placeholder="Set HP" value=""/>'));
+	line.append($('<input type="hidden" name="' + title + '-title" value=""/>'));
+	line.append($('<input type="hidden" name="' + title + '-x" value=""/>'));
+	line.append($('<input type="hidden" name="' + title + '-y" value=""/>'));
+}
+
 function addMonsterLine() {
 	var monsterLine = $('<div>').attr('id','monster' + monsterNumber.toString());
 	monsterNumber += 1;
-	monsterLine.addClass('select-row');
-	monsterLine.append(createInputSelect('Select monster', 'monster-title', 'select-monster'));
-	monsterLine.append(createInputSelect('Select X coordinate', 'x-title', 'select-x'));
-	monsterLine.append(createInputSelect('Select Y coordinate', 'y-title', 'select-y'));
-	monsterLine.append($('<input type="text" name="monster-hp" class="form-control" placeholder="Set HP" value=""/>'));
-	//monsterLine.append($('<input type="text" name="monster-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
-	monsterLine.append($('<input type="hidden" name="monster-title" value=""/>'));
+	addUnitLine(monsterLine, 'monster');
 	monsterLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
-	monsterLine.append($('<input type="hidden" name="monster-x" value=""/>'));
-	monsterLine.append($('<input type="hidden" name="monster-x-size" value=""/>'));
-	monsterLine.append($('<input type="hidden" name="monster-y" value=""/>'));
-	monsterLine.append($('<input type="hidden" name="monster-y-size" value=""/>'));
-	monsterLine.append($('<input type="hidden" name="leader" value=""/>'));
+	line.append($('<input type="hidden" name="leader" value=""/>'));
+	line.append($('<input type="hidden" name="' + title + '-y-size" value=""/>'));
+	line.append($('<input type="hidden" name="' + title + '-x-size" value=""/>'));
 	
 	monsterLine.find('.select-monster ul').append(createMonsterSelectContent());
-	monsterLine.find('.select-x ul').append(createXSelectContent());
-	monsterLine.find('.select-y ul').append(createYSelectContent());
+	monsterLine.find('.select-x ul').append(createXSelectContent(false));
+	monsterLine.find('.select-y ul').append(createYSelectContent(false));
 	$('#monsters-container').append(monsterLine);
+}
+
+function addHeroLine(number) {
+	var heroLine = $('<div>').attr('id','hero' + number.toString());
+	addUnitLine(heroLine, 'hero');
+	heroLine.append($('<input type="text" name="hero-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
+	
+	heroLine.find('.select-hero ul').append(createHeroSelectContent());
+	heroLine.find('.select-x ul').append(createXSelectContent(true));
+	heroLine.find('.select-y ul').append(createYSelectContent(true));
+	$('#hero' + number.toString()).append(heroLine);
 }
 
 function createInputSelect(title, titleClass, additionalClass) {
@@ -238,18 +274,12 @@ function adjustAct() {
 $(function() {
 	adjustMonsterParams();
 	addMonsterLine();
-	/*$('.select-monster ul').append(createMonsterSelectContent());
-	$('.select-x ul').append(createXSelectContent());
-	$('.select-y ul').append(createYSelectContent());*/
+	for (i=1; i <= 4; i++) {
+		addHeroLine(i);
+	}
 
 	$('.nav-tabs a').click(function (e) {
 		e.preventDefault();
-		$(this).tab('show');
-	})
-
-	$('.nav-tabs #map').click(function (e) {
-		e.preventDefault();
-		populate();
 		$(this).tab('show');
 	})
 });
