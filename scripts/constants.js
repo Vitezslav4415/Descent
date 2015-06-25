@@ -93,7 +93,56 @@ var MONSTERS_HP = [
 	['Wraith',5,7,6,8],
 	['Ynfernael Hulk',8,9,9,10],
 	['Zombie',3,6,5,9]
-]
+];
+
+var wiz = 'wizard', war = 'warrior', rog = 'rogue', sup = 'support';
+
+var HERO_LIST = [
+	['Ashrian',10,4,sup],
+	['Grisban the thirsty',14,4,war],
+	['Jain Fairwood',8,5,rog],
+	['Leoric of the book',8,5,wiz],
+	['Avric Albright',12,4,sup],
+	['Syndrael',12,4,war],
+	['Tomble Burrowell',8,5,rog],
+	['Widow Tarha',10,4,wiz],
+	['Elder Mok',10,4,sup],
+	['Laurel of Bloodwood',8,5,rog],
+	['Shiver',10,4,wiz],
+	['Trenloe the strong',12,3,war],
+	['Brother Gherinn',12,4,sup],
+	['Corbin',12,5,war],
+	['Jaes the exile',12,3,wiz],
+	['Lindel',10,5,rog],
+	['Andria Runehand',12,4,sup],
+	['Astarra',10,5,wiz],
+	['Tahlia',14,4,war],
+	['Tetherys',10,4,rog],
+	['Sahla',10,4,sup],
+	['Mordrog',14,4,war],
+	['Silhouette',10,4,rog],
+	['Lord Howthorne',12,4,war],
+	['Ispher',10,4,sup],
+	['Master Thorn',8,4,wiz],
+	['Nara the Fang',10,4,war],
+	['Sir Valadir',12,4,war],
+	['Challara',10,4,wiz],
+	['High mage Quellen',10,4,wiz],
+	['Reynhart the worthy',12,4,war],
+	['Alys Raine',12,4,war],
+	['Thaiden Mistpeak',10,5,rog],
+	['Ulma Grimstone',8,5,sup],
+	['Pathfinder Durik',10,4,war],
+	['Logan Leshley',10,4,rog],
+	['Dezra the Vile',8,4,wiz],
+	['Serena',8,6,sup],
+	['Rendiel',10,4,sup],
+	['Orkell the swift',10,5,war],
+	['Tinashi the wanderer',12,4,rog],
+	['Ravaella lightfoot',8,5,wiz],
+	['Roganna the Shade',10,4,rog],
+	['Augur Grisom',12,5,sup]
+];
 
 var SHOWING_CLASSES = [];
 SHOWING_CLASSES[1] = 'showOneCell';
