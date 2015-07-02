@@ -145,12 +145,11 @@ function updateHero(element, value) {
 
 	container.find('.hero-title').html(value + ' ');
 	container.find('input[name="hero-title"]').attr('value',value);
-	//container.find('.x-title').html('Select X coordinate' + ' ');
-	//container.find('.y-title').html('Select Y coordinate' + ' ');
 	container.find('input[name="hero-x"]').attr('value','');
 	container.find('input[name="hero-y"]').attr('value','');
 	container.find('input[name="hero-hp"]').val(heroesHp[value]);
 	container.find('input[name="hero-stamina"]').val(heroesStamina[value]);
+	container.find('img').attr('src', 'images/' + value.replace(new RegExp(" ",'g'), '_') + '.jpg');
 	var heroId = container.parent().attr('id');
 	$('[href="#' + heroId + '"]').html(value);
 }
@@ -248,6 +247,7 @@ function addHeroLine(number) {
 	heroLine.find('.select-x ul').append(createXSelectContent(true));
 	heroLine.find('.select-x ul').addClass('showOneCell');
 	heroLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	heroLine.append($('<img>').attr('src', '').attr('width','600px'));
 	$('#hero' + number.toString()).append(heroLine);
 }
 

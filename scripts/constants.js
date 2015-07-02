@@ -1,4 +1,11 @@
 var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+function listsort(a, b) {
+    if(a[0] < b[0]) return -1;
+    if(a[0] > b[0]) return 1;
+    return 0;
+}
+
 var MONSTERS_LIST = [
 	['Arachyura',2,2,false],
 	['Bandit',1,1,true],
@@ -142,6 +149,14 @@ var HEROES_LIST = [
 	['Ravaella lightfoot',8,5,wiz],
 	['Roganna the Shade',10,4,rog],
 	['Augur Grisom',12,5,sup]
+];
+
+MONSTERS_LIST.sort(listsort);
+HEROES_LIST.sort(listsort);
+
+PETS = [
+	'brightblaze',
+	'reanimated'
 ];
 
 var SHOWING_CLASSES = [];
