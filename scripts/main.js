@@ -10,24 +10,32 @@ var monsterLeaderHpActOne = [];
 var monsterMinionHpActTwo = [];
 var monsterLeaderHpActTwo = [];
 var actOne = true;
-var heroes = [];
+var heroesHp = [];
+var heroesStamina = [];
+var heroesType = [];
 
 var mapWidth = 26;
 var mapHeight = 26;
 
-function adjustMonsterParams() {
-	for (i = 0 ; i < MONSTERS_LIST.length; i++) {
+function adjustMonsterHeroParams() {
+	for (var i = 0 ; i < MONSTERS_LIST.length; i++) {
 		var monster = MONSTERS_LIST[i];
 		monsterWidth[monster[0]] = monster[1];
 		monsterHeight[monster[0]] = monster[2];
 		monsterRanged[monster[0]] = monster[3];
 	}
-	for (i = 0 ; i < MONSTERS_HP.length; i++) {
+	for (var i = 0 ; i < MONSTERS_HP.length; i++) {
 		var monster = MONSTERS_HP[i];
 		monsterMinionHpActOne[monster[0]] = monster[1];
 		monsterLeaderHpActOne[monster[0]] = monster[2];
 		monsterMinionHpActTwo[monster[0]] = monster[3];
 		monsterLeaderHpActTwo[monster[0]] = monster[4];
+	}
+	for (var i = 0 ; i < HEROES_LIST.length; i++) {
+		var hero = HEROES_LIST[i];
+		heroesHp[hero[0]] = hero[1];
+		heroesStamina[hero[0]] = hero[2];
+		heroesType[hero[0]] = hero[3];
 	}
 }
 
@@ -57,12 +65,12 @@ function updateOption(element, value, isMonster) {
 	var container = $(element).parents('.select-row');
 	if (isMonster || value == 'Clear') { //monster select or clearing cordinates
 		monsterTitle = $(element).html();
-		container.find('input[name="leader"]').attr('value', monsterTitle.indexOf('leader') > -1);
+		container.find('input[name="master"]').attr('value', monsterTitle.indexOf('master') > -1);
 		var xYSelects = $(container).find('.select-x, .select-y');
 		
 		if (isMonster) {
 			var monsterHp;
-			if (monsterTitle.indexOf('leader') > -1) {
+			if (monsterTitle.indexOf('master') > -1) {
 				if (actOne) {
 					monsterHp = monsterLeaderHpActOne[value];
 				} else {
@@ -114,6 +122,7 @@ function updateOption(element, value, isMonster) {
 		
 		if (parent.hasClass('select-x')) {
 			container.find('input[name="monster-x"]').attr('value',selectedCooedinate);
+			container.find('input[name="hero-x"]').attr('value',selectedCooedinate);
 			container.find('input[name="monster-x-size"]').attr('value',selectedSize);
 			container.find('.x-title').html($(element).html() + ' ');
 			if (!parent.hasClass('squared')) {
@@ -122,6 +131,7 @@ function updateOption(element, value, isMonster) {
 		} else {
 			container.find('.y-title').html($(element).html() + ' ');
 			container.find('input[name="monster-y"]').attr('value',selectedCooedinate);
+			container.find('input[name="hero-y"]').attr('value',selectedCooedinate);
 			container.find('input[name="monster-y-size"]').attr('value',selectedSize);
 			if (!parent.hasClass('squared')) {
 				container.find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
@@ -135,16 +145,22 @@ function updateHero(element, value) {
 
 	container.find('.hero-title').html(value + ' ');
 	container.find('input[name="hero-title"]').attr('value',value);
-	container.find('.x-title').html('Select X coordinate' + ' ');
-	container.find('.y-title').html('Select Y coordinate' + ' ');
+	//container.find('.x-title').html('Select X coordinate' + ' ');
+	//container.find('.y-title').html('Select Y coordinate' + ' ');
 	container.find('input[name="hero-x"]').attr('value','');
 	container.find('input[name="hero-y"]').attr('value','');
-	container.find('input[name="hero-hp"]').val(heroes[value].hp);
-	container.find('input[name="hero-stamina"]').val(heroes[value].stamina);
+	container.find('input[name="hero-hp"]').val(heroesHp[value]);
+	container.find('input[name="hero-stamina"]').val(heroesStamina[value]);
+	var heroId = container.parent().attr('id');
+	$('[href="#' + heroId + '"]').html(value);
 }
 
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
+}
+
+function removeRows() {
+	$('#monsters-container .select-row').remove();
 }
 
 function getAlphabetChar(number) {
@@ -157,7 +173,7 @@ function getAlphabetChar(number) {
 
 function createXSelectContent (oneCellOnly) {
 	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
-	for (i = 1; i <= mapWidth; i++) {
+	for (var i = 1; i <= mapWidth; i++) {
 		html += addOption(i.toString(), '1' + i.toString(), 'oneCell', 'updateCoordinate');
 		if (i <= mapWidth-1 && !oneCellOnly)
 			html += addOption(i.toString() + '-' + (i+1).toString(), '2' + i.toString(), 'twoCells', 'updateCoordinate');
@@ -169,7 +185,7 @@ function createXSelectContent (oneCellOnly) {
 
 function createYSelectContent (oneCellOnly) {
 	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
-	for (i = 1; i <= mapHeight; i++) {
+	for (var i = 1; i <= mapHeight; i++) {
 		html += addOption(getAlphabetChar(i-1), '1' + i.toString(), 'oneCell', 'updateCoordinate');
 		if (i <= mapHeight-1 && !oneCellOnly)
 			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i), '2' + i.toString(), 'twoCells', 'updateCoordinate');
@@ -181,8 +197,8 @@ function createYSelectContent (oneCellOnly) {
 
 function createMonsterSelectContent () {
 	var html = '';
-	for (i = 0; i < MONSTERS_LIST.length; i++) {
-		html += addOption(MONSTERS_LIST[i][0] + ' leader', MONSTERS_LIST[i][0], '', 'updateMonster');
+	for (var i = 0; i < MONSTERS_LIST.length; i++) {
+		html += addOption(MONSTERS_LIST[i][0] + ' master', MONSTERS_LIST[i][0], '', 'updateMonster');
 		html += addOption(MONSTERS_LIST[i][0] + ' minion', MONSTERS_LIST[i][0], '', 'updateMonster');
 	}
 	return html;
@@ -190,7 +206,7 @@ function createMonsterSelectContent () {
 
 function createHeroSelectContent () {
 	var html = '';
-		for (i = 0; i < HEROES_LIST.length; i++) {
+		for (var i = 0; i < HEROES_LIST.length; i++) {
 			html += addOption(HEROES_LIST[i][0] + ' ', HEROES_LIST[i][0], '', 'updateHero');
 		}
 	return html;
@@ -212,24 +228,26 @@ function addMonsterLine() {
 	monsterNumber += 1;
 	addUnitLine(monsterLine, 'monster');
 	monsterLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
-	line.append($('<input type="hidden" name="leader" value=""/>'));
-	line.append($('<input type="hidden" name="' + title + '-y-size" value=""/>'));
-	line.append($('<input type="hidden" name="' + title + '-x-size" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="master" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="monster-y-size" value=""/>'));
+	monsterLine.append($('<input type="hidden" name="monster-x-size" value=""/>'));
 	
 	monsterLine.find('.select-monster ul').append(createMonsterSelectContent());
 	monsterLine.find('.select-x ul').append(createXSelectContent(false));
 	monsterLine.find('.select-y ul').append(createYSelectContent(false));
 	$('#monsters-container').append(monsterLine);
+	return monsterLine;
 }
 
 function addHeroLine(number) {
-	var heroLine = $('<div>').attr('id','hero' + number.toString());
+	var heroLine = $('<div>').attr('id','hero' + number.toString() + 'wrapper');
 	addUnitLine(heroLine, 'hero');
 	heroLine.append($('<input type="text" name="hero-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
 	
 	heroLine.find('.select-hero ul').append(createHeroSelectContent());
 	heroLine.find('.select-x ul').append(createXSelectContent(true));
-	heroLine.find('.select-y ul').append(createYSelectContent(true));
+	heroLine.find('.select-x ul').addClass('showOneCell');
+	heroLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
 	$('#hero' + number.toString()).append(heroLine);
 }
 
@@ -245,7 +263,7 @@ function monster(element) {
 	var container = $(element);
 	var monster = {};
 	monster.title = container.find('[name="monster-title"]').val();
-	monster.leader = container.find('[name="leader"]').val();
+	monster.master = container.find('[name="master"]').val();
 	monster.x = container.find('[name="monster-x"]').val();
 	monster.y = container.find('[name="monster-y"]').val();
 	monster.vertical = container.find('[name="monster-x-size"]').val() < container.find('[name="monster-y-size"]').val();
@@ -254,17 +272,85 @@ function monster(element) {
 	return monster;
 }
 
+function hero(element) {
+	var container = $(element);
+	var hero = {};
+	hero.title = container.find('[name="hero-title"]').val();
+	hero.x = container.find('[name="hero-x"]').val();
+	hero.y = container.find('[name="hero-y"]').val();
+	hero.hp = container.find('[name="hero-hp"]').val();
+	hero.stamina = container.find('[name="hero-stamina"]').val();
+	return hero;
+}
+
 function populate() {
 	collectData();
+	updateConfig();
 	constructMapFromConfig();
+}
+
+function constructMapFromConfig() {
+	/*under construction*/;
+}
+
+function constructSettingsFromConfig() {
+	for (var i=1; i <= 4; i++) {
+		var j = i.toString();
+		if (config['hero' + j].title != "") {
+			updateHero($('#hero' + j + ' .select-hero li')[0],config['hero' + j].title);
+			$('#hero' + j + ' [name="hero-hp"]').val(config['hero' + j].hp);
+			$('#hero' + j + ' [name="hero-stamina"]').val(config['hero' + j].stamina);
+			$('#hero' + j + ' [name="hero-x"]').val(config['hero' + j].x);
+			$('#hero' + j + ' .x-title').html(config['hero' + j].x.toString() + ' ');
+			$('#hero' + j + ' [name="hero-y"]').val(config['hero' + j].y);
+			$('#hero' + j + ' .y-title').html(getAlphabetChar(config['hero' + j].y - 1) + ' ');
+		}
+	}
+	removeRows();
+	for (var i = 0; i < config.monsters.length; i++) {
+		var monster = config.monsters[i];
+		if (monster.title != '') {
+			var monsterLine = addMonsterLine();
+			var width = monster.vertical ? monsterWidth[monster.title] : monsterHeight[monster.title];
+			var height = monster.vertical ? monsterHeight[monster.title] : monsterWidth[monster.title];
+			
+			var monsterSelectUnit = monsterLine.find('[onclick="updateMonster(this, \'' + monster.title + '\')"]');
+			var correctMonsterSelectUnit;
+			for (var j = 0; j < 2; j++) {
+				if ($(monsterSelectUnit[j]).html().indexOf(monster.master ? 'master' : 'minion') > -1) {
+					correctMonsterSelectUnit = monsterSelectUnit[j];
+				}
+			}
+			updateMonster(correctMonsterSelectUnit, monster.title);
+			
+			var xValue = width.toString() + monster.x.toString();
+			updateCoordinate(monsterLine.find('.select-x [onclick="updateCoordinate(this, \'' + xValue + '\')"]'), xValue);
+			var yValue = height.toString() + monster.y.toString();
+			updateCoordinate(monsterLine.find('.select-y [onclick="updateCoordinate(this, \'' + yValue + '\')"]'), yValue);
+			monsterLine.find('input[name="monster-hp"]').val(monster.hp);
+		}
+	}
+	/*under construction*/;
+}
+
+function updateConfig() {
+	window.location.hash = Base64.encode(JSON.stringify(config));
+}
+
+function decodeConfig() {
+	config = JSON.parse(Base64.decode(window.location.hash));
 }
 
 function collectData() {
 	var monsterRows = $('#monsters .select-row');
-	options.monsters = [];
-	for (i = 0; i < monsterRows.length; i++) {
-		options.monsters.push(monster(monsterRows[i]));
+	config.monsters = [];
+	for (var i = 0; i < monsterRows.length; i++) {
+		config.monsters.push(monster(monsterRows[i]));
 	}
+	config.hero1 = hero($('#hero1 .select-row'));
+	config.hero2 = hero($('#hero2 .select-row'));
+	config.hero3 = hero($('#hero3 .select-row'));
+	config.hero4 = hero($('#hero4 .select-row'));
 }
 
 function adjustAct() {
@@ -272,10 +358,20 @@ function adjustAct() {
 }
 
 $(function() {
-	adjustMonsterParams();
+	adjustMonsterHeroParams();
 	addMonsterLine();
-	for (i=1; i <= 4; i++) {
+	for (var i = 1; i <= 4; i++) {
 		addHeroLine(i);
+	}
+	if (window.location.hash != "") {
+		decodeConfig();
+		constructMapFromConfig();
+		constructSettingsFromConfig();
+	} else {
+		//TEST
+		config = JSON.parse(Base64.decode(defaultConfig));
+		constructMapFromConfig();
+		constructSettingsFromConfig();
 	}
 
 	$('.nav-tabs a').click(function (e) {
