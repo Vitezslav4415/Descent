@@ -149,7 +149,7 @@ function updateHero(element, value) {
 	container.find('input[name="hero-y"]').attr('value','');
 	container.find('input[name="hero-hp"]').val(heroesHp[value]);
 	container.find('input[name="hero-stamina"]').val(heroesStamina[value]);
-	container.find('img').attr('src', 'images/' + value.replace(new RegExp(" ",'g'), '_') + '.jpg');
+	container.find('img').attr('src', 'images/heroes_cards/' + value.replace(new RegExp(" ",'g'), '_') + '.jpg');
 	var heroId = container.parent().attr('id');
 	$('[href="#' + heroId + '"]').html(value);
 }
@@ -211,6 +211,26 @@ function createHeroSelectContent () {
 	return html;
 }
 
+function createClassSelectContent () {
+	var html = '';
+		for (var i = 0; i < ARCHETYPES.length; i++) {
+			for (var j = 0; j < ARCHETYPES[i].classes.length; j++) {
+				var title = ARCHETYPES[i].classes[j].title;
+				html += addOption(title + ' ', title, '', 'updateClass');
+			}
+		}
+	return html;
+}
+
+function createArchtypeSelectContent () {
+	var html = '';
+		for (var i = 0; i < ARCHETYPES.length; i++) {
+			var title = ARCHETYPES[i].title;
+			html += addOption(title + ' ', title, '', 'updateArchtype');
+		}
+	return html;
+}
+
 function addUnitLine(line, title) {
 	line.addClass('select-row');
 	line.append(createInputSelect('Select ' + title, title + '-title', 'select-' + title));
@@ -244,6 +264,10 @@ function addHeroLine(number) {
 	heroLine.append($('<input type="text" name="hero-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
 	
 	heroLine.find('.select-hero ul').append(createHeroSelectContent());
+	heroLine.find('.select-hero').after(createInputSelect('Select Archtype', 'hero-archtype', 'select-archtype'));
+	heroLine.find('.select-archtype ul').append(createArchtypeSelectContent());
+	heroLine.find('.select-archtype').after(createInputSelect('Select Class', 'hero-class', 'select-class'));
+	heroLine.find('.select-class ul').append(createClassSelectContent());
 	heroLine.find('.select-x ul').append(createXSelectContent(true));
 	heroLine.find('.select-x ul').addClass('showOneCell');
 	heroLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));

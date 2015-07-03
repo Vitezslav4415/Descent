@@ -102,7 +102,71 @@ var MONSTERS_HP = [
 	['Zombie',3,6,5,9]
 ];
 
-var wiz = 'wizard', war = 'warrior', rog = 'rogue', sup = 'support';
+//Classes
+var apothecary = {},
+	disciple = {},
+	prophet = {},
+	spiritspeaker = {},
+	beastmaster = {},
+	berserker = {},
+	champion = {},
+	knight = {},
+	geomancer = {},
+	hexer = {},
+	necromancer = {},
+	runemaster = {},
+	stalker = {},
+	thief = {},
+	treasure_hunter = {},
+	wildlander = {};
+	
+	apothecary.title = 'Apothecary';
+	disciple.title = 'Disciple';
+	prophet.title = 'Prophet';
+	spiritspeaker.title = 'Spiritspeaker';
+	beastmaster.title = 'Beastmaster';
+	berserker.title = 'Berserker';
+	champion.title = 'Champion';
+	knight.title = 'Knight';
+	geomancer.title = 'Geomancer';
+	hexer.title = 'Hexer';
+	necromancer.title = 'Necromancer';
+	runemaster.title = 'Runemaster';
+	stalker.title = 'Stalker';
+	thief.title = 'Thief';
+	treasure_hunter.title = 'Treasure Hunter';
+	wildlander.title = 'Wildlander';
+
+	//Skills
+	apothecary.skills = [
+		['Brew Elixir', 0],
+		['Smoking Vials', 0], //1h weapon
+		['Concotion', 1],
+		['Herbal Lore', 1],
+		['Inky Substance', 1],
+		['Bottled Courage', 2],
+		['Protective Tonic', 2],
+		['Secret, Formula', 2],
+		['Hidden Stash', 3],
+		['Potent Remedies', 3]
+	];
+
+//Archetypes
+var wiz = {},
+	war = {},
+	rog = {},
+	sup = {};
+
+	wiz.title = 'Mage';
+	wiz.classes = [geomancer, hexer, necromancer, runemaster];
+	war.title = 'Warrior';
+	war.classes = [beastmaster, berserker, champion, knight];
+	rog.title = 'Scout';
+	rog.classes = [stalker, thief, treasure_hunter, wildlander];
+	sup.title = 'Healer';
+	sup.classes = [apothecary, disciple, prophet, spiritspeaker];			
+
+var ARCHETYPES = [wiz, war, rog, sup];
 
 var HEROES_LIST = [
 	['Ashrian',10,4,sup],
