@@ -102,4 +102,6 @@ body {
 
 .select-row img {
 	margin: 20px;
+	display: block;
+	max-width: 600px;
 }

@@ -170,7 +170,7 @@ function getAlphabetChar(number) {
 	return result += ALPHABET.charAt(number%26);
 }
 
-function createXSelectContent (oneCellOnly) {
+function createYSelectContent (oneCellOnly) {
 	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
 	for (var i = 1; i <= mapWidth; i++) {
 		html += addOption(i.toString(), '1' + i.toString(), 'oneCell', 'updateCoordinate');
@@ -182,7 +182,7 @@ function createXSelectContent (oneCellOnly) {
 	return html;
 }
 
-function createYSelectContent (oneCellOnly) {
+function createXSelectContent (oneCellOnly) {
 	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
 	for (var i = 1; i <= mapHeight; i++) {
 		html += addOption(getAlphabetChar(i-1), '1' + i.toString(), 'oneCell', 'updateCoordinate');
@@ -247,7 +247,7 @@ function addHeroLine(number) {
 	heroLine.find('.select-x ul').append(createXSelectContent(true));
 	heroLine.find('.select-x ul').addClass('showOneCell');
 	heroLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
-	heroLine.append($('<img>').attr('src', '').attr('width','600px'));
+	heroLine.append($('<img>').attr('src', ''));
 	$('#hero' + number.toString()).append(heroLine);
 }
 
@@ -301,9 +301,9 @@ function constructSettingsFromConfig() {
 			$('#hero' + j + ' [name="hero-hp"]').val(config['hero' + j].hp);
 			$('#hero' + j + ' [name="hero-stamina"]').val(config['hero' + j].stamina);
 			$('#hero' + j + ' [name="hero-x"]').val(config['hero' + j].x);
-			$('#hero' + j + ' .x-title').html(config['hero' + j].x.toString() + ' ');
+			$('#hero' + j + ' .x-title').html(getAlphabetChar(config['hero' + j].x - 1) + ' ');
 			$('#hero' + j + ' [name="hero-y"]').val(config['hero' + j].y);
-			$('#hero' + j + ' .y-title').html(getAlphabetChar(config['hero' + j].y - 1) + ' ');
+			$('#hero' + j + ' .y-title').html(config['hero' + j].y.toString() + ' ');
 		}
 	}
 	removeRows();
