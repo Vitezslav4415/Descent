@@ -2,43 +2,6 @@ function toggleMenu() {
 	$('.menu').toggleClass('active');
 }
 
-var monsterWidth = [];
-var monsterHeight = [];
-var monsterRanged = [];
-var monsterMinionHpActOne = [];
-var monsterLeaderHpActOne = [];
-var monsterMinionHpActTwo = [];
-var monsterLeaderHpActTwo = [];
-var actOne = true;
-var heroesHp = [];
-var heroesStamina = [];
-var heroesType = [];
-
-var mapWidth = 26;
-var mapHeight = 26;
-
-function adjustMonsterHeroParams() {
-	for (var i = 0 ; i < MONSTERS_LIST.length; i++) {
-		var monster = MONSTERS_LIST[i];
-		monsterWidth[monster[0]] = monster[1];
-		monsterHeight[monster[0]] = monster[2];
-		monsterRanged[monster[0]] = monster[3];
-	}
-	for (var i = 0 ; i < MONSTERS_HP.length; i++) {
-		var monster = MONSTERS_HP[i];
-		monsterMinionHpActOne[monster[0]] = monster[1];
-		monsterLeaderHpActOne[monster[0]] = monster[2];
-		monsterMinionHpActTwo[monster[0]] = monster[3];
-		monsterLeaderHpActTwo[monster[0]] = monster[4];
-	}
-	for (var i = 0 ; i < HEROES_LIST.length; i++) {
-		var hero = HEROES_LIST[i];
-		heroesHp[hero[0]] = hero[1];
-		heroesStamina[hero[0]] = hero[2];
-		heroesType[hero[0]] = hero[3];
-	}
-}
-
 function createSelect(title) {
 	html = '<div class="btn-group select-x showOneCell showTwoCells"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">' + title + ' <span class="caret"></span></button><ul class="dropdown-menu" role="menu"></ul></div>';
 	
@@ -72,15 +35,15 @@ function updateOption(element, value, isMonster) {
 			var monsterHp;
 			if (monsterTitle.indexOf('master') > -1) {
 				if (actOne) {
-					monsterHp = monsterLeaderHpActOne[value];
+					monsterHp = MONSTERS[value].masterHpActOne;
 				} else {
-					monsterHp = monsterLeaderHpActTwo[value];
+					monsterHp = MONSTERS[value].masterHpActTwo;
 				}
 			} else {
-			if (actOne) {
-					monsterHp = monsterMinionHpActOne[value];
+				if (actOne) {
+					monsterHp = MONSTERS[value].minionHpActOne;
 				} else {
-					monsterHp = monsterMinionHpActTwo[value];
+					monsterHp = MONSTERS[value].minionHpActTwo;
 				}
 			}
 			container.find('.monster-title').html(monsterTitle + ' ');
@@ -106,8 +69,8 @@ function updateOption(element, value, isMonster) {
 			value = value.substring(0, value.length - 1);
 		}
 		
-		var firstClass = SHOWING_CLASSES[monsterWidth[value]];
-		var secondClass = SHOWING_CLASSES[monsterHeight[value]];
+		var firstClass = SHOWING_CLASSES[MONSTERS[value].width];
+		var secondClass = SHOWING_CLASSES[MONSTERS[value].height];
 		xYSelects.removeClass(SHOWING_CLASSES[1] + ' ' + SHOWING_CLASSES[2] + ' ' + SHOWING_CLASSES[3] + ' squared');
 		xYSelects.addClass(firstClass);
 		if (firstClass == secondClass) {
@@ -147,8 +110,8 @@ function updateHero(element, value) {
 	container.find('input[name="hero-title"]').attr('value',value);
 	container.find('input[name="hero-x"]').attr('value','');
 	container.find('input[name="hero-y"]').attr('value','');
-	container.find('input[name="hero-hp"]').val(heroesHp[value]);
-	container.find('input[name="hero-stamina"]').val(heroesStamina[value]);
+	container.find('input[name="hero-hp"]').val(HEROES[value].hp);
+	container.find('input[name="hero-stamina"]').val(HEROES[value].stamina);
 	container.find('img').attr('src', 'images/heroes_cards/' + value.replace(new RegExp(" ",'g'), '_') + '.jpg');
 	var heroId = container.parent().attr('id');
 	$('[href="#' + heroId + '"]').html(value);
@@ -364,8 +327,8 @@ function constructSettingsFromConfig() {
 		var monster = config.monsters[i];
 		if (monster.title != '') {
 			var monsterLine = addMonsterLine();
-			var width = monster.vertical ? monsterWidth[monster.title] : monsterHeight[monster.title];
-			var height = monster.vertical ? monsterHeight[monster.title] : monsterWidth[monster.title];
+			var width = monster.vertical ? MONSTERS[monster.title].width : MONSTERS[monster.title].height;
+			var height = monster.vertical ? MONSTERS[monster.title].height : MONSTERS[monster.title].width;
 			
 			var monsterSelectUnit = monsterLine.find('[onclick="updateMonster(this, \'' + monster.title + '\');"]');
 			var correctMonsterSelectUnit;

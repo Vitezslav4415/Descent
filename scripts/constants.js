@@ -102,6 +102,21 @@ var MONSTERS_HP = [
 	['Zombie',3,6,5,9]
 ];
 
+MONSTERS = {};
+
+for (var i = 0; i < MONSTERS_LIST.length; i++) {
+	var monster = {};
+	monster.title = MONSTERS_LIST[i][0];
+	monster.width = MONSTERS_LIST[i][1];
+	monster.height = MONSTERS_LIST[i][2];
+	monster.ranged = MONSTERS_LIST[i][3];
+	monster.minionHpActOne = MONSTERS_HP[i][1];
+	monster.masterHpActOne = MONSTERS_HP[i][2];
+	monster.minionHpActTwo = MONSTERS_HP[i][3];
+	monster.masterHpActTwo = MONSTERS_HP[i][4];
+	MONSTERS[MONSTERS_LIST[i][0]] = monster;
+}
+
 //Classes
 var apothecary = {},
 	disciple = {},
@@ -228,7 +243,12 @@ var HEROES_LIST = [
 var HEROES = {};
 
 for (var i = 0; i < HEROES_LIST.length; i++) {
-	HEROES[HEROES_LIST[i][0]] = HEROES_LIST[i];
+	var hero = {};
+	hero.title = HEROES_LIST[i][0];
+	hero.hp = HEROES_LIST[i][1];
+	hero.stamina = HEROES_LIST[i][2];
+	hero.archtype = HEROES_LIST[i][3];
+	HEROES[HEROES_LIST[i][0]] = hero;
 }
 
 MONSTERS_LIST.sort(listsort);
@@ -250,3 +270,9 @@ var config = {};
 
 var defaultConfig = 'eyJtb25zdGVycyI6W3sidGl0bGUiOiJSYXpvcndpbmciLCJsZWFkZXIiOiJ0cnVlIiwieCI6IjgiLCJ5IjoiMTEiLCJ2ZXJ0aWNhbCI6ZmFsc2UsImhwIjoiNSJ9LHsidGl0bGUiOiJSYXpvcndpbmciLCJsZWFkZXIiOiJmYWxzZSIsIngiOiI3IiwieSI6IjEzIiwidmVydGljYWwiOmZhbHNlLCJocCI6IjQifSx7InRpdGxlIjoiUmF6b3J3aW5nIiwibGVhZGVyIjoiZmFsc2UiLCJ4IjoiOSIsInkiOiIxMiIsInZlcnRpY2FsIjpmYWxzZSwiaHAiOiI0In0seyJ0aXRsZSI6IlZvbHVjcml4IFJlYXZlciIsImxlYWRlciI6ImZhbHNlIiwieCI6IjgiLCJ5IjoiMTUiLCJ2ZXJ0aWNhbCI6ZmFsc2UsImhwIjoiMyJ9XSwiaGVybzEiOnsidGl0bGUiOiJBdWd1ciBHcmlzb20iLCJ4IjoiMTEiLCJ5IjoiMTMiLCJocCI6IjEyIiwic3RhbWluYSI6IjUifSwiaGVybzIiOnsidGl0bGUiOiJTaXIgVmFsYWRpciIsIngiOiIxMSIsInkiOiIxMSIsImhwIjoiMyIsInN0YW1pbmEiOiIwIn0sImhlcm8zIjp7InRpdGxlIjoiTGVvcmljIG9mIHRoZSBib29rIiwieCI6IjEwIiwieSI6IjEzIiwiaHAiOiI3Iiwic3RhbWluYSI6IjEifSwiaGVybzQiOnsidGl0bGUiOiJMaW5kZWwiLCJ4IjoiMTAiLCJ5IjoiMTIiLCJocCI6IjEwIiwic3RhbWluYSI6IjMifX0=';
 defaultConfig = 'eyJtb25zdGVycyI6W3sidGl0bGUiOiJSYXpvcndpbmciLCJtYXN0ZXIiOiJ0cnVlIiwieCI6IjExIiwieSI6IjgiLCJ2ZXJ0aWNhbCI6ZmFsc2UsImhwIjoiNSJ9LHsidGl0bGUiOiJSYXpvcndpbmciLCJtYXN0ZXIiOiJmYWxzZSIsIngiOiIxMyIsInkiOiI3IiwidmVydGljYWwiOmZhbHNlLCJocCI6IjQifSx7InRpdGxlIjoiUmF6b3J3aW5nIiwibWFzdGVyIjoiZmFsc2UiLCJ4IjoiMTIiLCJ5IjoiOSIsInZlcnRpY2FsIjpmYWxzZSwiaHAiOiI0In0seyJ0aXRsZSI6IlZvbHVjcml4IFJlYXZlciIsIm1hc3RlciI6ImZhbHNlIiwieCI6IjE1IiwieSI6IjgiLCJ2ZXJ0aWNhbCI6ZmFsc2UsImhwIjoiMyJ9XSwiaGVybzEiOnsidGl0bGUiOiJBdWd1ciBHcmlzb20iLCJ4IjoiMTMiLCJ5IjoiMTEiLCJocCI6IjEyIiwic3RhbWluYSI6IjUifSwiaGVybzIiOnsidGl0bGUiOiJTaXIgVmFsYWRpciIsIngiOiIxMSIsInkiOiIxMSIsImhwIjoiMyIsInN0YW1pbmEiOiIwIn0sImhlcm8zIjp7InRpdGxlIjoiTGVvcmljIG9mIHRoZSBib29rIiwieCI6IjEzIiwieSI6IjEwIiwiaHAiOiI3Iiwic3RhbWluYSI6IjEifSwiaGVybzQiOnsidGl0bGUiOiJMaW5kZWwiLCJ4IjoiMTIiLCJ5IjoiMTAiLCJocCI6IjEwIiwic3RhbWluYSI6IjMifX0=';
+
+
+var actOne = true;
+
+var mapWidth = 26;
+var mapHeight = 26;
