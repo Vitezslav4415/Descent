@@ -49,8 +49,8 @@ function addOptionOld(title, value, optionClass) {
 	return '<option class="' + optionClass + '" value="' + value + '">' + title + '</option>';
 }
 
-function addOption(title, value, optionClass, functionTitle) {
-	return '<li class="' + optionClass + '"><a href="#" onclick="' + functionTitle + '(this, \'' + value + '\')">' + title + '</a></li>';
+function addOption(title, optionClass, functionCallback) {
+	return '<li class="' + optionClass + '"><a href="#" onclick="' + functionCallback + '">' + title + '</a></li>';
 }
 
 function updateMonster(element, value) {
@@ -154,6 +154,35 @@ function updateHero(element, value) {
 	$('[href="#' + heroId + '"]').html(value);
 }
 
+function updateArchetype(element, value) {
+	var container = $(element).parents('.select-row');
+	var archetype;
+	for (var i = 0; i < ARCHETYPES.length && archetype == undefined; i++) {
+		if (value == ARCHETYPES[i].title) {
+			archetype = ARCHETYPES[i];
+		}
+	}
+	
+	container.find('.archetype-title').html(value + ' ');
+	container;
+}
+
+function adjustHero(archetype) {
+
+}
+
+function setArchetype(archetype) {
+
+}
+
+function adjustArchetype(archetype) {
+
+}
+
+function updateClass(element, value) {
+	var container = $(element).parents('.select-row');
+}
+
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
 }
@@ -171,25 +200,25 @@ function getAlphabetChar(number) {
 }
 
 function createYSelectContent (oneCellOnly) {
-	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
+	var html = addOption('Clear', '', 'updateCoordinate(this, \'Clear\');');
 	for (var i = 1; i <= mapWidth; i++) {
-		html += addOption(i.toString(), '1' + i.toString(), 'oneCell', 'updateCoordinate');
+		html += addOption(i.toString(), 'oneCell', 'updateCoordinate(this, \'1' + i.toString() + '\');');
 		if (i <= mapWidth-1 && !oneCellOnly)
-			html += addOption(i.toString() + '-' + (i+1).toString(), '2' + i.toString(), 'twoCells', 'updateCoordinate');
+			html += addOption(i.toString() + '-' + (i+1).toString(), 'twoCells', 'updateCoordinate(this, \'2' + i.toString() + '\');');
 		if (i <= mapWidth-2 && !oneCellOnly)
-			html += addOption(i.toString() + '-' + (i+2).toString(), '3' + i.toString(), 'threeCells', 'updateCoordinate');
+			html += addOption(i.toString() + '-' + (i+2).toString(), 'threeCells', 'updateCoordinate(this, \'3' + i.toString() + '\');');
 	}
 	return html;
 }
 
 function createXSelectContent (oneCellOnly) {
-	var html = addOption('Clear', 'Clear', '', 'updateCoordinate');
+	var html = addOption('Clear', '', 'updateCoordinate(this, \'Clear\');');
 	for (var i = 1; i <= mapHeight; i++) {
-		html += addOption(getAlphabetChar(i-1), '1' + i.toString(), 'oneCell', 'updateCoordinate');
+		html += addOption(getAlphabetChar(i-1), 'oneCell', 'updateCoordinate(this, \'1' + i.toString() + '\');');
 		if (i <= mapHeight-1 && !oneCellOnly)
-			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i), '2' + i.toString(), 'twoCells', 'updateCoordinate');
+			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i), 'twoCells', 'updateCoordinate(this, \'2' + i.toString() + '\');');
 		if (i <= mapHeight-2 && !oneCellOnly)
-			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i+1), '3' + i.toString(), 'threeCells', 'updateCoordinate');
+			html += addOption(getAlphabetChar(i-1) + '-' + getAlphabetChar(i+1), 'threeCells', 'updateCoordinate(this, \'3' + i.toString() + '\');');
 	}
 	return html;
 }
@@ -197,8 +226,8 @@ function createXSelectContent (oneCellOnly) {
 function createMonsterSelectContent () {
 	var html = '';
 	for (var i = 0; i < MONSTERS_LIST.length; i++) {
-		html += addOption(MONSTERS_LIST[i][0] + ' master', MONSTERS_LIST[i][0], '', 'updateMonster');
-		html += addOption(MONSTERS_LIST[i][0] + ' minion', MONSTERS_LIST[i][0], '', 'updateMonster');
+		html += addOption(MONSTERS_LIST[i][0] + ' master', '', 'updateMonster(this, \'' + MONSTERS_LIST[i][0] + '\');');
+		html += addOption(MONSTERS_LIST[i][0] + ' minion', '', 'updateMonster(this, \'' + MONSTERS_LIST[i][0] + '\');');
 	}
 	return html;
 }
@@ -206,7 +235,7 @@ function createMonsterSelectContent () {
 function createHeroSelectContent () {
 	var html = '';
 		for (var i = 0; i < HEROES_LIST.length; i++) {
-			html += addOption(HEROES_LIST[i][0] + ' ', HEROES_LIST[i][0], '', 'updateHero');
+			html += addOption(HEROES_LIST[i][0] + ' ', '', 'updateHero(this, \'' + HEROES_LIST[i][0] + '\');');
 		}
 	return html;
 }
@@ -216,7 +245,7 @@ function createClassSelectContent () {
 		for (var i = 0; i < ARCHETYPES.length; i++) {
 			for (var j = 0; j < ARCHETYPES[i].classes.length; j++) {
 				var title = ARCHETYPES[i].classes[j].title;
-				html += addOption(title + ' ', title, '', 'updateClass');
+				html += addOption(title + ' ', '', 'updateClass(this, \'' + title + '\');');
 			}
 		}
 	return html;
@@ -226,7 +255,7 @@ function createArchtypeSelectContent () {
 	var html = '';
 		for (var i = 0; i < ARCHETYPES.length; i++) {
 			var title = ARCHETYPES[i].title;
-			html += addOption(title + ' ', title, '', 'updateArchtype');
+			html += addOption(title + ' ', '', 'updateArchetype(this, \'' + title + '\');');
 		}
 	return html;
 }
@@ -338,7 +367,7 @@ function constructSettingsFromConfig() {
 			var width = monster.vertical ? monsterWidth[monster.title] : monsterHeight[monster.title];
 			var height = monster.vertical ? monsterHeight[monster.title] : monsterWidth[monster.title];
 			
-			var monsterSelectUnit = monsterLine.find('[onclick="updateMonster(this, \'' + monster.title + '\')"]');
+			var monsterSelectUnit = monsterLine.find('[onclick="updateMonster(this, \'' + monster.title + '\');"]');
 			var correctMonsterSelectUnit;
 			for (var j = 0; j < 2; j++) {
 				if ($(monsterSelectUnit[j]).html().indexOf(monster.master ? 'master' : 'minion') > -1) {
@@ -348,9 +377,9 @@ function constructSettingsFromConfig() {
 			updateMonster(correctMonsterSelectUnit, monster.title);
 			
 			var xValue = width.toString() + monster.x.toString();
-			updateCoordinate(monsterLine.find('.select-x [onclick="updateCoordinate(this, \'' + xValue + '\')"]'), xValue);
+			updateCoordinate(monsterLine.find('.select-x [onclick="updateCoordinate(this, \'' + xValue + '\');"]'), xValue);
 			var yValue = height.toString() + monster.y.toString();
-			updateCoordinate(monsterLine.find('.select-y [onclick="updateCoordinate(this, \'' + yValue + '\')"]'), yValue);
+			updateCoordinate(monsterLine.find('.select-y [onclick="updateCoordinate(this, \'' + yValue + '\');"]'), yValue);
 			monsterLine.find('input[name="monster-hp"]').val(monster.hp);
 		}
 	}

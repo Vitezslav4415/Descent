@@ -168,6 +168,16 @@ var wiz = {},
 
 var ARCHETYPES = [wiz, war, rog, sup];
 
+var CLASSES = [];
+
+for (var i = 0; i < ARCHETYPES.length; i++) {
+	for (var j = 0; j < ARCHETYPES[i].classes.length; j++) {
+		var classObject = ARCHETYPES[i].classes[j];
+		classObject.archetype = ARCHETYPES[i];
+		CLASSES.push(classObject);
+	}
+}
+
 var HEROES_LIST = [
 	['Ashrian',10,4,sup],
 	['Grisban the thirsty',14,4,war],
@@ -214,6 +224,12 @@ var HEROES_LIST = [
 	['Roganna the Shade',10,4,rog],
 	['Augur Grisom',12,5,sup]
 ];
+
+var HEROES = {};
+
+for (var i = 0; i < HEROES_LIST.length; i++) {
+	HEROES[HEROES_LIST[i][0]] = HEROES_LIST[i];
+}
 
 MONSTERS_LIST.sort(listsort);
 HEROES_LIST.sort(listsort);
