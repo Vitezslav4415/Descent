@@ -53,13 +53,22 @@ body {
 
 .oneCell,
 .twoCells,
-.threeCells {
+.threeCells,
+.mage,
+.warrior,
+.scout,
+.healer {
 	display: none;
 }
 
 .showOneCell .oneCell,
 .showTwoCells .twoCells,
-.showThreeCells .threeCells {
+.showThreeCells .threeCells,
+.showarch.mage .mage,
+.showarch.warrior .warrior,
+.showarch.scout .scout,
+.showarch.healer .healer,
+.showarch {
 	display: block;
 }
 

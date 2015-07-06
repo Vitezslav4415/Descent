@@ -115,42 +115,72 @@ function updateHero(element, value) {
 	container.find('img').attr('src', 'images/heroes_cards/' + value.replace(new RegExp(" ",'g'), '_') + '.jpg');
 	var heroId = container.parent().attr('id');
 	$('[href="#' + heroId + '"]').html(value);
+	updateArchetype(element, HEROES[value].archetype.title);
+}
+
+function adjustHero(element, archetype) {
+	var container = $(element).parents('.select-row');
+	var heroTitle = container.find('input[name="hero-title"]').val();
+	if (heroTitle != '' && HEROES[heroTitle].archetype.title != archetype) {
+		clearHero(element);
+	}
+}
+
+function clearHero(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.hero-title').html('Select hero ');
+	container.find('input[name="hero-title"]').attr('value','');
+	container.find('img').attr('src', 'images/heroes_cards/default.jpg');
 }
 
 function updateArchetype(element, value) {
 	var container = $(element).parents('.select-row');
-	var archetype;
-	for (var i = 0; i < ARCHETYPES.length && archetype == undefined; i++) {
-		if (value == ARCHETYPES[i].title) {
-			archetype = ARCHETYPES[i];
-		}
-	}
-	
 	container.find('.archetype-title').html(value + ' ');
-	container;
+	container.find('input[name="archetype-title"]').attr('value',value);
+	adjustClass(element, value);
+	adjustHero(element, value);
 }
 
-function adjustHero(archetype) {
-
+function adjustArchetype(element, archetype) {
+	var container = $(element).parents('.select-row');
+	container.find('.select-archetype ul').removeClass(ARCHETYPE_CLASSES).addClass(archetype.toLowerCase());
 }
 
-function setArchetype(archetype) {
-
-}
-
-function adjustArchetype(archetype) {
-
+function clearArchetype(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.select-archetype ul').addClass(ARCHETYPE_CLASSES.toLowerCase());
+	container.find('.archetype-title').html('Select archetype ');
+	container.find('input[name="archetype-title"]').attr('value','');
+	adjustClass(element, ARCHETYPE_CLASSES);
 }
 
 function updateClass(element, value) {
 	var container = $(element).parents('.select-row');
+	container.find('.class-title').html(value + ' ');
+	container.find('input[name="class-title"]').attr('value',value);
+	adjustArchetype(element, CLASSES[value].archetype.title);
+}
+
+function adjustClass(element, archetype) {
+	var container = $(element).parents('.select-row');
+	container.find('.select-class ul').removeClass(ARCHETYPE_CLASSES).addClass(archetype.toLowerCase());
+	var currentClass = container.find('input[name="class-title"]').val();
+	if (currentClass != '' && CLASSES[currentClass].archetype.title != archetype) {
+		clearClass(element);
+	}
+}
+
+function clearClass(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.class-title').html('Select class ');
+	container.find('input[name="class-title"]').attr('value','');
 }
 
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
 }
 
-function removeRows() {
+function removeMonsterRows() {
 	$('#monsters-container .select-row').remove();
 }
 
@@ -196,30 +226,30 @@ function createMonsterSelectContent () {
 }
 
 function createHeroSelectContent () {
-	var html = '';
-		for (var i = 0; i < HEROES_LIST.length; i++) {
-			html += addOption(HEROES_LIST[i][0] + ' ', '', 'updateHero(this, \'' + HEROES_LIST[i][0] + '\');');
-		}
+	var html = addOption('Clear', '', 'clearHero(this);');
+	for (var i = 0; i < HEROES_LIST.length; i++) {
+		html += addOption(HEROES_LIST[i][0] + ' ', '', 'updateHero(this, \'' + HEROES_LIST[i][0] + '\');');
+	}
 	return html;
 }
 
 function createClassSelectContent () {
-	var html = '';
-		for (var i = 0; i < ARCHETYPES.length; i++) {
-			for (var j = 0; j < ARCHETYPES[i].classes.length; j++) {
-				var title = ARCHETYPES[i].classes[j].title;
-				html += addOption(title + ' ', '', 'updateClass(this, \'' + title + '\');');
-			}
+	var html = addOption('Clear', '', 'clearClass(this);');
+	for (var i = 0; i < ARCHETYPES_LIST.length; i++) {
+		for (var j = 0; j < ARCHETYPES_LIST[i].classes.length; j++) {
+			var title = ARCHETYPES_LIST[i].classes[j].title;
+			html += addOption(title + ' ', ARCHETYPES_LIST[i].title, 'updateClass(this, \'' + title + '\');');
 		}
+	}
 	return html;
 }
 
-function createArchtypeSelectContent () {
-	var html = '';
-		for (var i = 0; i < ARCHETYPES.length; i++) {
-			var title = ARCHETYPES[i].title;
-			html += addOption(title + ' ', '', 'updateArchetype(this, \'' + title + '\');');
-		}
+function createArchetypeSelectContent () {
+	var html = addOption('Clear', '', 'clearArchetype(this);');
+	for (var i = 0; i < ARCHETYPES_LIST.length; i++) {
+		var title = ARCHETYPES_LIST[i].title;
+		html += addOption(title + ' ', title, 'updateArchetype(this, \'' + title + '\');');
+	}
 	return html;
 }
 
@@ -256,10 +286,12 @@ function addHeroLine(number) {
 	heroLine.append($('<input type="text" name="hero-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
 	
 	heroLine.find('.select-hero ul').append(createHeroSelectContent());
-	heroLine.find('.select-hero').after(createInputSelect('Select Archtype', 'hero-archtype', 'select-archtype'));
-	heroLine.find('.select-archtype ul').append(createArchtypeSelectContent());
-	heroLine.find('.select-archtype').after(createInputSelect('Select Class', 'hero-class', 'select-class'));
-	heroLine.find('.select-class ul').append(createClassSelectContent());
+	heroLine.find('.select-hero').after(createInputSelect('Select Archetype ', 'archetype-title', 'select-archetype'));
+	heroLine.find('.select-archetype ul').addClass(ARCHETYPE_CLASSES + ' showarch').append(createArchetypeSelectContent());
+	heroLine.append($('<input type="hidden" name="archetype-title" value=""/>'));
+	heroLine.find('.select-archetype').after(createInputSelect('Select Class ', 'class-title', 'select-class'));
+	heroLine.find('.select-class ul').addClass(ARCHETYPE_CLASSES + ' showarch').append(createClassSelectContent());
+	heroLine.append($('<input type="hidden" name="class-title" value=""/>'));
 	heroLine.find('.select-x ul').append(createXSelectContent(true));
 	heroLine.find('.select-x ul').addClass('showOneCell');
 	heroLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
@@ -322,7 +354,7 @@ function constructSettingsFromConfig() {
 			$('#hero' + j + ' .y-title').html(config['hero' + j].y.toString() + ' ');
 		}
 	}
-	removeRows();
+	removeMonsterRows();
 	for (var i = 0; i < config.monsters.length; i++) {
 		var monster = config.monsters[i];
 		if (monster.title != '') {
@@ -374,7 +406,6 @@ function adjustAct() {
 }
 
 $(function() {
-	adjustMonsterHeroParams();
 	addMonsterLine();
 	for (var i = 1; i <= 4; i++) {
 		addHeroLine(i);

@@ -181,16 +181,19 @@ var wiz = {},
 	sup.title = 'Healer';
 	sup.classes = [apothecary, disciple, prophet, spiritspeaker];			
 
-var ARCHETYPES = [wiz, war, rog, sup];
+var ARCHETYPE_CLASSES = 'mage warrior scout healer';
+var ARCHETYPES_LIST = [wiz, war, rog, sup];
 
-var CLASSES = [];
+var CLASSES = {};
+var ARCHETYPES = {};
 
-for (var i = 0; i < ARCHETYPES.length; i++) {
-	for (var j = 0; j < ARCHETYPES[i].classes.length; j++) {
-		var classObject = ARCHETYPES[i].classes[j];
-		classObject.archetype = ARCHETYPES[i];
-		CLASSES.push(classObject);
+for (var i = 0; i < ARCHETYPES_LIST.length; i++) {
+	for (var j = 0; j < ARCHETYPES_LIST[i].classes.length; j++) {
+		var classObject = ARCHETYPES_LIST[i].classes[j];
+		classObject.archetype = ARCHETYPES_LIST[i];
+		CLASSES[classObject.title] = classObject;
 	}
+	ARCHETYPES[ARCHETYPES_LIST[i].title] = ARCHETYPES_LIST[i];
 }
 
 var HEROES_LIST = [
@@ -247,7 +250,7 @@ for (var i = 0; i < HEROES_LIST.length; i++) {
 	hero.title = HEROES_LIST[i][0];
 	hero.hp = HEROES_LIST[i][1];
 	hero.stamina = HEROES_LIST[i][2];
-	hero.archtype = HEROES_LIST[i][3];
+	hero.archetype = HEROES_LIST[i][3];
 	HEROES[HEROES_LIST[i][0]] = hero;
 }
 
