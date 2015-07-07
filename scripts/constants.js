@@ -117,6 +117,12 @@ for (var i = 0; i < MONSTERS_LIST.length; i++) {
 	MONSTERS[MONSTERS_LIST[i][0]] = monster;
 }
 
+//Items
+var hand = {};
+var twohand = {};
+var armor = {};
+var item = {};
+
 //Classes
 var apothecary = {},
 	disciple = {},
@@ -132,7 +138,7 @@ var apothecary = {},
 	runemaster = {},
 	stalker = {},
 	thief = {},
-	treasure_hunter = {},
+	treasureHunter = {},
 	wildlander = {};
 	
 	apothecary.title = 'Apothecary';
@@ -149,13 +155,13 @@ var apothecary = {},
 	runemaster.title = 'Runemaster';
 	stalker.title = 'Stalker';
 	thief.title = 'Thief';
-	treasure_hunter.title = 'Treasure Hunter';
+	treasureHunter.title = 'Treasure Hunter';
 	wildlander.title = 'Wildlander';
 
 	//Skills
 	apothecary.skills = [
 		['Brew Elixir', 0],
-		['Smoking Vials', 0], //1h weapon
+		['Smoking Vials', 0, hand],
 		['Concotion', 1],
 		['Herbal Lore', 1],
 		['Inky Substance', 1],
@@ -164,6 +170,212 @@ var apothecary = {},
 		['Secret, Formula', 2],
 		['Hidden Stash', 3],
 		['Potent Remedies', 3]
+	];
+	
+	beastmaster.skills = [
+		['Predator', 3],
+		['Changing Skins', 3],
+		['Shadow Hunter', 2],
+		['Savagery', 2],
+		['Feral Frenzy', 2],
+		['Survivalist', 1],
+		['Stalker', 1],
+		['Bestial Rage', 1],
+		['Bound By The Hunt', 0],
+		['Wolf', 0],
+		['Skinning Knife', 0, hand],
+		['Hunting Spear', 0, hand]
+	];
+	
+	berserker.skills = [
+		['Execute', 3],
+		['Death Rage', 3],
+		['Whirlwind', 2],
+		['Weapon Mastery', 2],
+		['Charge', 2],
+		['Cripple', 1],
+		['Counter Attack', 1],
+		['Brute', 1],
+		['Rage', 0],
+		['Chipped Greataxe', 0, twohand]              
+	];
+	
+	champion.skills = [
+		['A Living Legend', 1],
+		['For The Cause', 3],
+		['Glory Of Battle', 1],
+		['Horn Of Courage', 0, item],
+		['Inspiring Presence', 1],
+		['Motivating Charge', 2],
+		['No Mercy', 2],
+		['Stoic Resolve', 2],
+		['Valor Of Heroes', 0],
+		['Valorous Strike', 3],
+		['Worn Greatsword', 0, twohand]
+	];
+	
+	disciple.skills = [
+		['Armor Of Faith', 1],
+		['Blessed Strike', 1],
+		['Cleansing Touch', 1],
+		['Divine Fury', 2],
+		['Holy Power', 3],
+		['Iron Mace', 0, hand],
+		['Prayer Of Healing', 0],
+		['Prayer Of Peace', 2],
+		['Radiant Light', 3],
+		['Time Of Need', 2],
+		['Wooden Shield', 0, hand]
+	];
+	
+	geomancer.skills = [
+		['Cataclysm', 3],
+		['Earthen Anguish', 1],
+		['Gravity Spike', 3],
+		['Ley Line', 2],
+		['Molten Fury', 2],
+		['Quaking Word', 1],
+		['Stasis Rune', 0, twohand],
+		['Stone Tongue', 1],
+		['Summoned Stone', 0],
+		['Terracall', 0],
+		['Ways Of Stone', 2]
+	];
+	
+	hexer.skills = [
+		['Accursed Arms', 3],
+		['Affliction', 1],
+		['Crippling Curse', 2],
+		['Enfeebling Hex', 0],
+		['Fel Command', 2],
+		['Internal Rot', 2],
+		['Plague Cloud', 3],
+		['Plague Spasm', 1],
+		['Staff Of The Grave', 0, twohand],
+		['Viral Hex', 1]
+	];
+	
+	knight.skills = [
+		['Advance', 1],
+		['Challenge', 1],
+		['Defend', 1],
+		['Defense Training', 2],
+		['Guard', 2],
+		['Inspiration', 3],
+		['Iron Longsword', 0, hand],
+		['Oath Of Honor', 0],
+		['Shield Slam', 2],
+		['Stalwart', 3],
+		['Wooden Shield', 0, hand]
+	];
+	
+	necromancer.skills = [
+		['Army Of Death', 3],
+		['Corpse Blast', 1],
+		['Dark Pact', 2],
+		['Deathly Haste', 1],
+		['Dying Command', 3],
+		['Fury Of Undeath', 1],
+		['Raise Dead', 0],
+		['Reanimate', 0],
+		['Reapers Scythe', 0, twohand],
+		['Undead Might', 2],
+		['Vampiric Blood', 2]
+	];
+	
+	propher.skills = [
+		['All Seeing', 2],
+		['Battle Vision', 1],
+		['Focused Insights', 3],
+		['Forewarning', 1],
+		['Grim Fate', 1],
+		['Iron Flail', 0, hand],
+		['Lifeline', 2],
+		['Omniscience', 3],
+		['Sages Tome', 0, item],
+		['Soothing Insight', 0],
+		['Victory Foretold', 2]
+	];
+	
+	runemaster.skills = [
+		['Arcane Bolt', 0, twohand],
+		['Break The Rune', 3],
+		['Exploding Rune', 1],
+		['Ghost Armor', 1],
+		['Inscribe Rune', 1],
+		['Iron Will', 2],
+		['Quick Casting', 3],
+		['Rune Mastery', 2],
+		['Runic Knowledge', 0],
+		['Runic Sorcery', 2]
+	];
+	
+	spiritspeaker.skills = [
+		['Ancestor Spirits', 3],
+		['Cloud Of Mist', 2],
+		['Drain Spirit', 1],
+		['Healing Rain', 1],
+		['Natures Bounty', 2],
+		['Oak Staff', 0, twohand],
+		['Shared Pain', 1],
+		['Stoneskin', 0],
+		['Tempest', 2],
+		['Vigor', 3]
+	];
+	
+	stalker.skills = [
+		['Ambush', 3],
+		['Black Widows Web', 0, hand],
+		['Easy Prey', 2],
+		['Exploit', 1],
+		['Hunters Mark', 1],
+		['Hunting Knife', 0, hand],
+		['Lay Of The Land', 2],
+		['Makeshift Trap', 1],
+		['Poison Barbs', 2],
+		['Set Trap', 0],
+		['Upper Hand', 3]
+	];
+	
+	thief.skills = [
+		['Appraisal', 1],
+		['Bushwack', 3],
+		['Caltrops', 2],
+		['Dirty Tricks', 1],
+		['Greedy', 0],
+		['Lucky Charm', 0, item],
+		['Lurk', 3],
+		['Sneaky', 1],
+		['Throwing Knives', 0, hand],
+		['Tumble', 2],
+		['Unseen', 2]
+	];
+	
+	treasureHunter.skills = [
+		['Delver', 0],
+		['Dungeoneer', 1],
+		['Finders Keepers', 3],
+		['Gold Rush', 1],
+		['Guard The Spoils', 2],
+		['Leather Whip', 0, hand],
+		['Lure Of Fortune', 2],
+		['Sleight Of Hand', 2],
+		['Survey', 1],
+		['The Dead Mans Compass', 0, item],
+		['Trail Of Riches', 3]
+	];
+	
+	wildlander.skills = [
+		['Accurate', 1],
+		['Black Arrow', 3],
+		['Bow Mastery', 2],
+		['Danger Sense', 1],
+		['Eagle Eyes', 1],
+		['First Strike', 2],
+		['Fleet Of Foot', 2],
+		['Nimble', 0],
+		['Running Shot', 3],
+		['Yew Shortbow', 0, twohand]
 	];
 
 //Archetypes
@@ -177,7 +389,7 @@ var wiz = {},
 	war.title = 'Warrior';
 	war.classes = [beastmaster, berserker, champion, knight];
 	rog.title = 'Scout';
-	rog.classes = [stalker, thief, treasure_hunter, wildlander];
+	rog.classes = [stalker, thief, treasureHunter, wildlander];
 	sup.title = 'Healer';
 	sup.classes = [apothecary, disciple, prophet, spiritspeaker];			
 
