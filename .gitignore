@@ -41,3 +41,8 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+.settings/org.eclipse.wst.jsdt.ui.superType.name
+.settings/.jsdtscope
+.project
+.settings/org.eclipse.wst.jsdt.ui.superType.container
