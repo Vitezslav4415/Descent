@@ -52,7 +52,7 @@ var MONSTERS_LIST = [
 	['Wraith',1,1,true],
 	['Ynfernael Hulk',2,2,false],
 	['Zombie',1,1,false]
-]
+];
 
 var MONSTERS_HP = [
 	['Arachyura',5,7,7,9],

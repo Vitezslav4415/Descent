@@ -364,10 +364,11 @@ function constructSettingsFromConfig() {
 			
 			var monsterSelectUnit = monsterLine.find('[onclick="updateMonster(this, \'' + monster.title + '\');"]');
 			var correctMonsterSelectUnit;
-			for (var j = 0; j < 2; j++) {
-				if ($(monsterSelectUnit[j]).html().indexOf(monster.master ? 'master' : 'minion') > -1) {
-					correctMonsterSelectUnit = monsterSelectUnit[j];
-				}
+			
+			if (monster.master && $(monsterSelectUnit[0]).html().indexOf('master') > -1 || !monster.master && !($(monsterSelectUnit[0]).html().indexOf('master') > -1)) {
+				correctMonsterSelectUnit = monsterSelectUnit[0];
+			} else {
+				correctMonsterSelectUnit = monsterSelectUnit[1];
 			}
 			updateMonster(correctMonsterSelectUnit, monster.title);
 			
@@ -424,5 +425,5 @@ $(function() {
 	$('.nav-tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');
-	})
+	});
 });
