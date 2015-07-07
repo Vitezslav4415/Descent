@@ -283,7 +283,7 @@ var apothecary = {},
 		['Vampiric Blood', 2]
 	];
 	
-	propher.skills = [
+	prophet.skills = [
 		['All Seeing', 2],
 		['Battle Vision', 1],
 		['Focused Insights', 3],

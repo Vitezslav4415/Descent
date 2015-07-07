@@ -159,6 +159,7 @@ function updateClass(element, value) {
 	container.find('.class-title').html(value + ' ');
 	container.find('input[name="class-title"]').attr('value',value);
 	adjustArchetype(element, CLASSES[value].archetype.title);
+	updateSkills(element, value);
 }
 
 function adjustClass(element, archetype) {
@@ -174,6 +175,11 @@ function clearClass(element) {
 	var container = $(element).parents('.select-row');
 	container.find('.class-title').html('Select class ');
 	container.find('input[name="class-title"]').attr('value','');
+}
+
+function updateSkills(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('#skills-container').attr("class", "showclass " + value);
 }
 
 function removeRow(element) {
@@ -286,17 +292,40 @@ function addHeroLine(number) {
 	heroLine.append($('<input type="text" name="hero-stamina" class="form-control" placeholder="Set stamina" value=""/>'));
 	
 	heroLine.find('.select-hero ul').append(createHeroSelectContent());
-	heroLine.find('.select-hero').after(createInputSelect('Select Archetype ', 'archetype-title', 'select-archetype'));
-	heroLine.find('.select-archetype ul').addClass(ARCHETYPE_CLASSES + ' showarch').append(createArchetypeSelectContent());
-	heroLine.append($('<input type="hidden" name="archetype-title" value=""/>'));
-	heroLine.find('.select-archetype').after(createInputSelect('Select Class ', 'class-title', 'select-class'));
-	heroLine.find('.select-class ul').addClass(ARCHETYPE_CLASSES + ' showarch').append(createClassSelectContent());
-	heroLine.append($('<input type="hidden" name="class-title" value=""/>'));
 	heroLine.find('.select-x ul').append(createXSelectContent(true));
 	heroLine.find('.select-x ul').addClass('showOneCell');
 	heroLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	heroLine.append(createInputSelect('Select Archetype ', 'archetype-title', 'select-archetype'));
+	heroLine.find('.select-archetype ul').addClass(ARCHETYPE_CLASSES + ' showarch').append(createArchetypeSelectContent());
+	heroLine.append($('<input type="hidden" name="archetype-title" value=""/>'));
+	heroLine.append(createInputSelect('Select Class ', 'class-title', 'select-class'));
+	heroLine.find('.select-class ul').addClass(ARCHETYPE_CLASSES + ' showarch').append(createClassSelectContent());
+	heroLine.append($('<input type="hidden" name="class-title" value=""/>'));
+	heroLine.append(createSkillsBlock());
 	heroLine.append($('<img>').attr('src', ''));
 	$('#hero' + number.toString()).append(heroLine);
+}
+
+function createSkillsBlock() {
+	var html = $('<div>').addClass('showClass').attr('id','skills-container');
+	html.append($('<h1>Skills</h1>'));
+	for (c in CLASSES) {
+		if (CLASSES[c] == undefined) continue;
+		var currentClass = CLASSES[c];
+		for (var i = 0; i < currentClass.skills.length; i++) {
+			var skill = currentClass.skills[i];
+			if (skill[2] != undefined) continue;
+			var skillObject = $('<div>').addClass('checkbox').addClass(currentClass.title.replace(new RegExp(" ",'g'), '').toLowerCase());
+			skillObject.append($('<label><input type="checkbox" name="' + skill[0] + '"/> ' + skill[0] + '</label>'));
+			if (skill[1] == 0) {
+				skillObject.addClass('disabled');
+				skillObject.find('input').prop('checked', true);
+				skillObject.find('input').attr('disabled', '');
+			}
+			html.append(skillObject);
+		}
+	}
+	return html;
 }
 
 function createInputSelect(title, titleClass, additionalClass) {

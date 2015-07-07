@@ -57,7 +57,23 @@ body {
 .mage,
 .warrior,
 .scout,
-.healer {
+.healer,
+.checkbox.apothecary,
+.checkbox.disciple,
+.checkbox.prophet,
+.checkbox.spiritspeaker,
+.checkbox.beastmaster,
+.checkbox.berserker,
+.checkbox.champion,
+.checkbox.knight,
+.checkbox.geomancer,
+.checkbox.hexer,
+.checkbox.necromancer,
+.checkbox.runemaster,
+.checkbox.stalker,
+.checkbox.thief,
+.checkbox.treasurehunter,
+.checkbox.wildlander {
 	display: none;
 }
 
@@ -68,7 +84,24 @@ body {
 .showarch.warrior .warrior,
 .showarch.scout .scout,
 .showarch.healer .healer,
-.showarch {
+.showarch,
+.showclass.apothecary .checkbox.apothecary,
+.showclass.disciple .checkbox.disciple,
+.showclass.prophet .checkbox.prophet,
+.showclass.spiritspeaker .checkbox.spiritspeaker,
+.showclass.beastmaster .checkbox.beastmaster,
+.showclass.berserker .checkbox.berserker,
+.showclass.champion .checkbox.champion,
+.showclass.knight .checkbox.knight,
+.showclass.geomancer .checkbox.geomancer,
+.showclass.hexer .checkbox.hexer,
+.showclass.necromancer .checkbox.necromancer,
+.showclass.runemaster .checkbox.runemaster,
+.showclass.stalker .checkbox.stalker,
+.showclass.thief .checkbox.thief,
+.showclass.treasurehunter .checkbox.treasurehunter,
+.showclass.wildlander .checkbox.wildlander,
+.showclass {
 	display: block;
 }
 
