@@ -201,3 +201,7 @@ body {
 .items-selects > .btn-group > button {
 	width: 128px;
 }
+
+.secondary {
+	opacity: 0.5;
+}

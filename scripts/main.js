@@ -215,16 +215,28 @@ function adjustSkillsImages(element) {
 function updateHand(element, value) {
 	var container = $(element).parents('.select-row');
 	var second = $(element).parents('.select-weapon').hasClass('second-select');
+	var twohand = $(element).parent().hasClass('twohand');
 	var selector = '.hand';
 	if (second) selector += '2';
+	container.find('.items-container').find('.hand,.hand2').removeClass('secondary');
 	var src;
 	if ($(element).parent().hasClass('classitem')) {
 		var classValue = container.find('input[name="class-title"]').attr('value');
-		src = 'images/classes_cards/' + classValue + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+		src = 'images/classes_cards/' + classValue.replace(new RegExp(" ",'g'), '').toLowerCase() + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	} else {
 		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	}
-	container.find('.items-container').find(selector).attr('src', src);
+	container.find('.items-container').find(twohand ? '.hand,.hand2' : selector).attr('src', src);
+	if (twohand) {
+		container.find('.weapon-title').html(value + ' ');
+		container.find('.items-container').find('.hand2').addClass('secondary');
+	} else {
+		$(element).parents('.select-weapon').find('.weapon-title').html(value + ' ');
+	}
+	container.find('[name="hand' + (second && !twohand ? '2' : '') + '"]').val(value);
+	if (twohand) {
+		container.find('[name="hand2"]').val('');
+	}
 }
 
 function updateArmor(element, value) {
@@ -232,11 +244,13 @@ function updateArmor(element, value) {
 	var src;
 	if ($(element).parent().hasClass('classitem')) {
 		var classValue = container.find('input[name="class-title"]').attr('value');
-		src = 'images/classes_cards/' + classValue + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+		src = 'images/classes_cards/' + classValue.replace(new RegExp(" ",'g'), '').toLowerCase() + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	} else {
 		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	}
 	container.find('.items-container').find('.armor').attr('src', src);
+	$(element).parents('.select-armor').find('.armor-title').html(value + ' ');
+	container.find('[name="armor"]').val(value);
 }
 
 function updateItem(element, value) {
@@ -247,11 +261,37 @@ function updateItem(element, value) {
 	var src;
 	if ($(element).parent().hasClass('classitem')) {
 		var classValue = container.find('input[name="class-title"]').attr('value');
-		src = 'images/classes_cards/' + classValue + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+		src = 'images/classes_cards/' + classValue.replace(new RegExp(" ",'g'), '').toLowerCase() + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	} else {
 		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	}
 	container.find('.items-container').find(selector).attr('src', src);
+	$(element).parents('.select-item').find('.item-title').html(value + ' ');
+	container.find('[name="item' + (second ? '2' : '') + '"]').val(value);
+}
+
+function clearHand(element) {
+	var container = $(element).parents('.select-row');
+	var second = $(element).parents('.select-weapon').hasClass('second-select');
+	var selector = '.hand';
+	if (second) selector += '2';
+	container.find('.items-container').find(selector).attr('src', 'images/misc/hand' + (second ? '2' : '') + '.png');
+	$(element).parents('.select-weapon').find('.weapon-title').html('Select Weapon ');
+}
+
+function clearArmor(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.items-container').find('.armor').attr('src', 'images/misc/armor.png');
+	$(element).parents('.select-weapon').find('.weapon-title').html('Select Armor ');
+}
+
+function clearItem(element) {
+	var container = $(element).parents('.select-row');
+	var second = $(element).parents('.select-item').hasClass('second-select');
+	var selector = '.item';
+	if (second) selector += '2';
+	container.find('.items-container').find(selector).attr('src', 'images/misc/item.png');
+	$(element).parents('.select-item').find('.item-title').html('Select Item ');
 }
 
 function removeRow(element) {
@@ -485,6 +525,11 @@ function createItemsBlock() {
 	itemsSelects.append(itemsSelectSecond);
 	
 	html.append(itemsSelects);
+	html.append($('<input type="hidden" name="hand">'));
+	html.append($('<input type="hidden" name="hand2">'));
+	html.append($('<input type="hidden" name="armor">'));
+	html.append($('<input type="hidden" name="item">'));
+	html.append($('<input type="hidden" name="item2">'));
 	return html;
 }
 
@@ -527,6 +572,7 @@ function hero(element) {
 	hero.stamina = container.find('[name="hero-stamina"]').val();
 	hero.className = container.find('[name="class-title"]').val();
 	hero.skills = getSkills(container, hero.className);
+	hero.items = getItems(container);
 	return hero;
 }
 
@@ -538,6 +584,16 @@ function getSkills(container, className) {
 		result.push([currentSkill.attr('name'), currentSkill.prop('checked')]);
 	}
 	return result;
+}
+
+function getItems(container) {
+	var items = {};
+	items.hand = container.find('[name="hand"]').val();
+	items.hand2 = container.find('[name="hand2"]').val();
+	items.armor = container.find('[name="armor"]').val();
+	items.item = container.find('[name="item"]').val();
+	items.item2 = container.find('[name="item2"]').val();
+	return items;
 }
 
 function populate() {
@@ -567,6 +623,21 @@ function constructSettingsFromConfig() {
 			if (config['hero' + j].skills != undefined) {
 				updateSkills($('#hero' + j + ' .skills-container'), config['hero' + j].skills);
 				adjustSkillsImages($('#hero' + j + ' .skills-container'));
+			}
+			if (config['hero' + j].items != undefined && config['hero' + j].items.hand != undefined) {
+				updateHand($('#hero' + j + ' .select-weapon:not(.second-select) [onclick="updateHand(this, \'' + config['hero' + j].items.hand + '\')"]'), config['hero' + j].items.hand);
+			}
+			if (config['hero' + j].items != undefined && config['hero' + j].items.hand2 != undefined) {
+				updateHand($('#hero' + j + ' .select-weapon.second-select [onclick="updateHand(this, \'' + config['hero' + j].items.hand2 + '\')"]'), config['hero' + j].items.hand2);
+			}
+			if (config['hero' + j].items != undefined && config['hero' + j].items.armor != undefined) {
+				updateArmor($('#hero' + j + ' .select-armor [onclick="updateArmor(this, \'' + config['hero' + j].items.armor + '\')"]'), config['hero' + j].items.armor);
+			}
+			if (config['hero' + j].items != undefined && config['hero' + j].items.item != undefined) {
+				updateItem($('#hero' + j + ' .select-item:not(.second-select) [onclick="updateItem(this, \'' + config['hero' + j].items.item + '\')"]'), config['hero' + j].items.item);
+			}
+			if (config['hero' + j].items != undefined && config['hero' + j].items.item2 != undefined) {
+				updateItem($('#hero' + j + ' .select-item.second-select [onclick="updateItem(this, \'' + config['hero' + j].items.item2 + '\')"]'), config['hero' + j].items.item2);
 			}
 		}
 	}
