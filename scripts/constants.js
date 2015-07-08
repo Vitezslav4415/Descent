@@ -118,10 +118,60 @@ for (var i = 0; i < MONSTERS_LIST.length; i++) {
 }
 
 //Items
-var hand = {};
-var twohand = {};
-var armor = {};
-var item = {};
+var hand = {className : 'hand'};
+var twohand = {className : 'hand2'};
+var armor = {className : 'armor'};
+var item = {className : 'item'};
+
+ITEMS_LIST = [
+	['Bearded Axe', twohand],
+	['Belt Of Alchemy', item],
+	['Belt Of Waterwalking', item],
+	['Bow Of Bone', twohand],
+	['Chainmail', armor],
+	['Crossbow', hand],
+	['Deflecting Shield', hand],
+	['Dire Flail', twohand],
+	['Elm Greatbow', twohand],
+	['Elven Boots', item],
+	['Flash Powder', item],
+	['Guardian Axe', twohand],
+	['Halberd', twohand],
+	['Handbow', item],
+	['Heavy Cloak', armor],
+	['Immolation', twohand],
+	['Iron Battleaxe', twohand],
+	['Iron Shield', hand],
+	['Iron Spear', hand],
+	['Jinns Lamp', item],
+	['Leather Armor', armor],
+	['Lifedrain Scepter', hand],
+	['Light Hammer', hand],
+	['Lucky Charm', item],
+	['Mace Of Aver', twohand],
+	['Magic Staff', twohand],
+	['Magma Blast', twohand],
+	['Mana Weave', item],
+	['Mapstone', item],
+	['Poisoned Blowgun', hand],
+	['Ring Of Power', item],
+	['Rune Plate', armor],
+	['Scorpion Helm', item],
+	['Serpent Dagger', hand],
+	['Shield Of Light', hand],
+	['Sling', hand],
+	['Steel Broadsword', hand],
+	['Sunburst', twohand],
+	['Teleportation Rune', twohand],
+	['Thiefs Vest', armor],
+	['Trident', hand]
+];
+
+ITEMS = {hand : [], hand2 : [], armor : [], item : []};
+
+for (var i = 0; i < ITEMS_LIST.length; i++) {
+	ITEMS[ITEMS_LIST[i][1].className].push(ITEMS_LIST[i]);
+}
 
 //Classes
 var apothecary = {},
@@ -162,12 +212,12 @@ var apothecary = {},
 	apothecary.skills = [
 		['Brew Elixir', 0],
 		['Smoking Vials', 0, hand],
-		['Concotion', 1],
+		['Concoction', 1],
 		['Herbal Lore', 1],
 		['Inky Substance', 1],
 		['Bottled Courage', 2],
 		['Protective Tonic', 2],
-		['Secret, Formula', 2],
+		['Secret Formula', 2],
 		['Hidden Stash', 3],
 		['Potent Remedies', 3]
 	];
@@ -398,12 +448,22 @@ var ARCHETYPES_LIST = [wiz, war, rog, sup];
 
 var CLASSES = {};
 var ARCHETYPES = {};
+var CLASSES_ITEMS = [];
 
 for (var i = 0; i < ARCHETYPES_LIST.length; i++) {
 	for (var j = 0; j < ARCHETYPES_LIST[i].classes.length; j++) {
 		var classObject = ARCHETYPES_LIST[i].classes[j];
 		classObject.archetype = ARCHETYPES_LIST[i];
 		CLASSES[classObject.title] = classObject;
+		for (var k = 0; k < classObject.skills.length; k++) {
+			if (classObject.skills[k][2] != undefined) {
+				var classItem = []; 
+				classItem[0] = classObject.skills[k][0];
+				classItem[1] = classObject.title.replace(new RegExp(" ",'g'), '').toLowerCase();
+				classItem[2] = classObject.skills[k][2];
+				CLASSES_ITEMS.push(classItem);
+			}
+		}
 	}
 	ARCHETYPES[ARCHETYPES_LIST[i].title] = ARCHETYPES_LIST[i];
 }

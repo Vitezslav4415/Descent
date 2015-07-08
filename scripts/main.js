@@ -160,6 +160,7 @@ function updateClass(element, value) {
 	container.find('input[name="class-title"]').attr('value',value);
 	adjustArchetype(element, CLASSES[value].archetype.title);
 	adjustSkills(element, value);
+	adjustItems(element, value);
 }
 
 function adjustClass(element, archetype) {
@@ -189,6 +190,11 @@ function adjustSkills(element, value) {
 	container.find('.skills-container').attr("class", "showclass skills-container " + value.replace(new RegExp(" ",'g'), '').toLowerCase());
 }
 
+function adjustItems(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.items-selects').attr("class", "showclass items-selects " + value.replace(new RegExp(" ",'g'), '').toLowerCase());
+}
+
 function adjustSkillsImages(element) {
 	var container = $(element).parents('.select-row');
 	var checkedSkills = [];
@@ -204,6 +210,48 @@ function adjustSkillsImages(element) {
 	for (var i = 0; i < checkedSkills.length; i++) {
 		container.find('[skill="' + checkedSkills[i] + '"]').addClass('showimage');
 	}
+}
+
+function updateHand(element, value) {
+	var container = $(element).parents('.select-row');
+	var second = $(element).parents('.select-weapon').hasClass('second-select');
+	var selector = '.hand';
+	if (second) selector += '2';
+	var src;
+	if ($(element).parent().hasClass('classitem')) {
+		var classValue = container.find('input[name="class-title"]').attr('value');
+		src = 'images/classes_cards/' + classValue + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+	} else {
+		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+	}
+	container.find('.items-container').find(selector).attr('src', src);
+}
+
+function updateArmor(element, value) {
+	var container = $(element).parents('.select-row');
+	var src;
+	if ($(element).parent().hasClass('classitem')) {
+		var classValue = container.find('input[name="class-title"]').attr('value');
+		src = 'images/classes_cards/' + classValue + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+	} else {
+		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+	}
+	container.find('.items-container').find('.armor').attr('src', src);
+}
+
+function updateItem(element, value) {
+	var container = $(element).parents('.select-row');
+	var second = $(element).parents('.select-item').hasClass('second-select');
+	var selector = '.item';
+	if (second) selector += '2';
+	var src;
+	if ($(element).parent().hasClass('classitem')) {
+		var classValue = container.find('input[name="class-title"]').attr('value');
+		src = 'images/classes_cards/' + classValue + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+	} else {
+		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+	}
+	container.find('.items-container').find(selector).attr('src', src);
 }
 
 function removeRow(element) {
@@ -283,6 +331,53 @@ function createArchetypeSelectContent () {
 	return html;
 }
 
+function createHandSelectContent () {
+	var html = addOption('Clear', '', 'clearHand(this);');
+	for (var i = 0; i < ITEMS['hand'].length; i++) {
+		var item = ITEMS['hand'][i];
+		html += addOption(item[0] + ' ', 'hand', 'updateHand(this, \'' + item[0] + '\')');
+	}
+	for (var i = 0; i < ITEMS['hand2'].length; i++) {
+		var item = ITEMS['hand2'][i];
+		html += addOption(item[0] + ' ', 'hand twohand', 'updateHand(this, \'' + item[0] + '\')');
+	}
+	var classItems = getSkillsItems(hand);
+	for (var i = 0; i < classItems.length; i++) {
+		html += addOption(classItems[i][0] + ' ', 'hand classitem ' + classItems[i][1], 'updateHand(this, \'' + classItems[i][0] + '\')');
+	}
+	classItems = getSkillsItems(twohand);
+	for (var i = 0; i < classItems.length; i++) {
+		html += addOption(classItems[i][0] + ' ', 'hand twohand classitem ' + classItems[i][1], 'updateHand(this, \'' + classItems[i][0] + '\')');
+	}
+	return html;
+}
+
+function createArmorSelectContent () {
+	var html = addOption('Clear', '', 'clearArmor(this);');
+	for (var i = 0; i < ITEMS['armor'].length; i++) {
+		var item = ITEMS['armor'][i];
+		html += addOption(item[0] + ' ', 'armor', 'updateArmor(this, \'' + item[0] + '\')');
+	}
+	var classItems = getSkillsItems(armor);
+	for (var i = 0; i < classItems.length; i++) {
+		html += addOption(classItems[i][0] + ' ', 'armor classitem ' + classItems[i][1], 'updateArmor(this, \'' + classItems[i][0] + '\')');
+	}
+	return html;
+}
+
+function createItemSelectContent () {
+	var html = addOption('Clear', '', 'clearItem(this);');
+	for (var i = 0; i < ITEMS['item'].length; i++) {
+		var itemObject = ITEMS['item'][i];
+		html += addOption(itemObject[0] + ' ', 'item', 'updateItem(this, \'' + itemObject[0] + '\')');
+	}
+	var classItems = getSkillsItems(item);
+	for (var i = 0; i < classItems.length; i++) {
+		html += addOption(classItems[i][0] + ' ', 'item classitem ' + classItems[i][1], 'updateItem(this, \'' + classItems[i][0] + '\')');
+	}
+	return html;
+}
+
 function addUnitLine(line, title) {
 	line.addClass('select-row');
 	line.append(createInputSelect('Select ' + title, title + '-title', 'select-' + title));
@@ -326,6 +421,7 @@ function addHeroLine(number) {
 	heroLine.find('.select-class ul').addClass(ARCHETYPE_CLASSES + ' showarch').append(createClassSelectContent());
 	heroLine.append($('<input type="hidden" name="class-title" value=""/>'));
 	heroLine.append(createSkillsBlock());
+	heroLine.append(createItemsBlock());
 	heroLine.append($('<img>').attr('src', ''));
 	$('#hero' + number.toString()).append(heroLine);
 }
@@ -352,7 +448,44 @@ function createSkillsBlock() {
 			skillsImages.append($('<img>').attr('src', 'images/classes_cards/' + classUpdatedTitle + '/' + skill[0].replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg').attr('skill', skill[0]));
 		}
 	}
-	return html.append(skillsImages);
+	html.append(skillsImages);
+	return html;
+}
+
+function createItemsBlock() {
+	var html = $('<div>').addClass('items-block');
+	var itemsContainer = $('<div>').addClass('items-container');
+	itemsContainer.append($('<h1>Items</h1>'));
+	itemsContainer.append($('<img src="images/misc/hand.png">').addClass('hand'));
+	itemsContainer.append($('<img src="images/misc/hand2.png">').addClass('hand2'));
+	itemsContainer.append($('<img src="images/misc/armor.png">').addClass('armor'));
+	itemsContainer.append($('<img src="images/misc/item.png">').addClass('item'));
+	itemsContainer.append($('<img src="images/misc/item.png">').addClass('item2'));
+	html.append(itemsContainer);
+	
+	var itemsSelects = $('<div>').addClass('items-selects showclass');
+	var weaponSelect = $(createInputSelect('Select Weapon', 'weapon-title', 'select-weapon'));
+	weaponSelect.find('ul').append(createHandSelectContent());
+	itemsSelects.append(weaponSelect);
+	
+	var weaponSelectSecond = $(createInputSelect('Select Weapon', 'weapon-title', 'select-weapon')).addClass('second-select');
+	weaponSelectSecond.find('ul').append(createHandSelectContent());
+	itemsSelects.append(weaponSelectSecond);
+	
+	var armorSelect = $(createInputSelect('Select Armor', 'armor-title', 'select-armor'));
+	armorSelect.find('ul').append(createArmorSelectContent());
+	itemsSelects.append(armorSelect);
+	
+	var itemsSelect = $(createInputSelect('Select Item', 'weapon-item', 'select-item'));
+	itemsSelect.find('ul').append(createItemSelectContent());
+	itemsSelects.append(itemsSelect);
+	
+	var itemsSelectSecond = $(createInputSelect('Select Item', 'item-title', 'select-item')).addClass('second-select');
+	itemsSelectSecond.find('ul').append(createItemSelectContent());
+	itemsSelects.append(itemsSelectSecond);
+	
+	html.append(itemsSelects);
+	return html;
 }
 
 function createInputSelect(title, titleClass, additionalClass) {
@@ -361,6 +494,14 @@ function createInputSelect(title, titleClass, additionalClass) {
 	button.append($('<span>' + title + ' </span>').addClass(titleClass)).append($('<span>').addClass('caret'));
 	select.append(button).append($('<ul>').addClass('dropdown-menu').attr('role','menu'));
 	return select;
+}
+
+function getSkillsItems(type) {
+	var result = [];
+	for (var i = 0; i < CLASSES_ITEMS.length; i++) {
+		if (CLASSES_ITEMS[i][2] == type) result.push(CLASSES_ITEMS[i]);
+	}
+	return result;
 }
 
 function monster(element) {

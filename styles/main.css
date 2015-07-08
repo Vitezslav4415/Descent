@@ -73,7 +73,23 @@ body {
 .checkbox.stalker,
 .checkbox.thief,
 .checkbox.treasurehunter,
-.checkbox.wildlander {
+.checkbox.wildlander,
+.items-selects .apothecary,
+.items-selects .disciple,
+.items-selects .prophet,
+.items-selects .spiritspeaker,
+.items-selects .beastmaster,
+.items-selects .berserker,
+.items-selects .champion,
+.items-selects .knight,
+.items-selects .geomancer,
+.items-selects .hexer,
+.items-selects .necromancer,
+.items-selects .runemaster,
+.items-selects .stalker,
+.items-selects .thief,
+.items-selects .treasurehunter,
+.items-selects .wildlander {
 	display: none;
 }
 
@@ -101,6 +117,22 @@ body {
 .showclass.thief .checkbox.thief,
 .showclass.treasurehunter .checkbox.treasurehunter,
 .showclass.wildlander .checkbox.wildlander,
+.showclass.apothecary.items-selects .apothecary,
+.showclass.disciple.items-selects .disciple,
+.showclass.prophet.items-selects .prophet,
+.showclass.spiritspeaker.items-selects .spiritspeaker,
+.showclass.beastmaster.items-selects .beastmaster,
+.showclass.berserker.items-selects .berserker,
+.showclass.champion.items-selects .champion,
+.showclass.knight.items-selects .knight,
+.showclass.geomancer.items-selects .geomancer,
+.showclass.hexer.items-selects .hexer,
+.showclass.necromancer.items-selects .necromancer,
+.showclass.runemaster.items-selects .runemaster,
+.showclass.stalker.items-selects .stalker,
+.showclass.thief.items-selects .thief,
+.showclass.treasurehunter.items-selects .treasurehunter,
+.showclass.wildlander.items-selects .wildlander,
 .showclass {
 	display: block;
 }
@@ -126,7 +158,8 @@ body {
 
 .select-row > .btn-group,
 .select-row > input[type="text"],
-.select-row > button {
+.select-row > button,
+.items-selects > .btn-group {
 	margin-right: 15px;
 }
 
@@ -156,4 +189,15 @@ body {
 
 .imagescontainer img.showimage {
 	display: inline-block;
+}
+
+.items-container img {
+	margin: 10px 15px 10px 0;
+	display: inline-block;
+	width: 128px;
+	height: 192px;
+}
+
+.items-selects > .btn-group > button {
+	width: 128px;
 }
