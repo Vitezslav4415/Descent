@@ -112,7 +112,7 @@ function updateHero(element, value) {
 	container.find('input[name="hero-y"]').attr('value','');
 	container.find('input[name="hero-hp"]').val(HEROES[value].hp);
 	container.find('input[name="hero-stamina"]').val(HEROES[value].stamina);
-	container.find('img').attr('src', 'images/heroes_cards/' + value.replace(new RegExp(" ",'g'), '_') + '.jpg');
+	container.children('img').attr('src', 'images/heroes_cards/' + value.replace(new RegExp(" ",'g'), '_') + '.jpg');
 	var heroId = container.parent().attr('id');
 	$('[href="#' + heroId + '"]').html(value);
 	updateArchetype(element, HEROES[value].archetype.title);
@@ -187,6 +187,23 @@ function updateSkills(element, skillValues) {
 function adjustSkills(element, value) {
 	var container = $(element).parents('.select-row');
 	container.find('.skills-container').attr("class", "showclass skills-container " + value.replace(new RegExp(" ",'g'), '').toLowerCase());
+}
+
+function adjustSkillsImages(element) {
+	var container = $(element).parents('.select-row');
+	var checkedSkills = [];
+	var className = container.find('input[name="class-title"]').attr('value');
+	var skills = $(container).find('.checkbox.' + className.replace(new RegExp(" ",'g'), '').toLowerCase() + ' input');
+	for (var i = 0; i < skills.length; i++) {
+		var currentSkill = $(skills[i]);
+		if (currentSkill.prop('checked')) {
+			checkedSkills.push(currentSkill.attr('name'));
+		}
+	}
+	container.find('.imagescontainer img').removeClass('showimage');
+	for (var i = 0; i < checkedSkills.length; i++) {
+		container.find('[skill="' + checkedSkills[i] + '"]').addClass('showimage');
+	}
 }
 
 function removeRow(element) {
@@ -316,23 +333,26 @@ function addHeroLine(number) {
 function createSkillsBlock() {
 	var html = $('<div>').addClass('showClass').addClass('skills-container');
 	html.append($('<h1>Skills</h1>'));
+	var skillsImages = $('<div>').addClass('imagescontainer');
 	for (c in CLASSES) {
 		if (CLASSES[c] == undefined) continue;
 		var currentClass = CLASSES[c];
 		for (var i = 0; i < currentClass.skills.length; i++) {
 			var skill = currentClass.skills[i];
 			if (skill[2] != undefined) continue;
-			var skillObject = $('<div>').addClass('checkbox').addClass(currentClass.title.replace(new RegExp(" ",'g'), '').toLowerCase());
-			skillObject.append($('<label><input type="checkbox" name="' + skill[0] + '"/> ' + skill[0] + '</label>'));
+			var classUpdatedTitle = currentClass.title.replace(new RegExp(" ",'g'), '').toLowerCase();
+			var skillObject = $('<div>').addClass('checkbox').addClass(classUpdatedTitle);
+			skillObject.append($('<label><input type="checkbox" name="' + skill[0] + '" onClick="adjustSkillsImages(this);"/> ' + skill[0] + '</label>'));
 			if (skill[1] == 0) {
 				skillObject.addClass('disabled');
 				skillObject.find('input').prop('checked', true);
 				skillObject.find('input').attr('disabled', '');
 			}
 			html.append(skillObject);
+			skillsImages.append($('<img>').attr('src', 'images/classes_cards/' + classUpdatedTitle + '/' + skill[0].replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg').attr('skill', skill[0]));
 		}
 	}
-	return html;
+	return html.append(skillsImages);
 }
 
 function createInputSelect(title, titleClass, additionalClass) {
@@ -405,6 +425,7 @@ function constructSettingsFromConfig() {
 			}
 			if (config['hero' + j].skills != undefined) {
 				updateSkills($('#hero' + j + ' .skills-container'), config['hero' + j].skills);
+				adjustSkillsImages($('#hero' + j + ' .skills-container'));
 			}
 		}
 	}

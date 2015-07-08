@@ -147,3 +147,13 @@ body {
 	display: block;
 	max-width: 600px;
 }
+
+.imagescontainer img {
+	display: none;
+	margin: 10px;
+	width: 200px;
+}
+
+.imagescontainer img.showimage {
+	display: inline-block;
+}
