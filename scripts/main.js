@@ -159,7 +159,7 @@ function updateClass(element, value) {
 	container.find('.class-title').html(value + ' ');
 	container.find('input[name="class-title"]').attr('value',value);
 	adjustArchetype(element, CLASSES[value].archetype.title);
-	updateSkills(element, value);
+	adjustSkills(element, value);
 }
 
 function adjustClass(element, archetype) {
@@ -177,9 +177,16 @@ function clearClass(element) {
 	container.find('input[name="class-title"]').attr('value','');
 }
 
-function updateSkills(element, value) {
+function updateSkills(element, skillValues) {
 	var container = $(element).parents('.select-row');
-	container.find('#skills-container').attr("class", "showclass " + value);
+	for (var i = 0; i < skillValues.length; i++) {
+		container.find('input[name="' + skillValues[i][0] + '"]').prop('checked', skillValues[i][1]);
+	}
+}
+
+function adjustSkills(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.skills-container').attr("class", "showclass skills-container " + value.replace(new RegExp(" ",'g'), '').toLowerCase());
 }
 
 function removeRow(element) {
@@ -307,7 +314,7 @@ function addHeroLine(number) {
 }
 
 function createSkillsBlock() {
-	var html = $('<div>').addClass('showClass').attr('id','skills-container');
+	var html = $('<div>').addClass('showClass').addClass('skills-container');
 	html.append($('<h1>Skills</h1>'));
 	for (c in CLASSES) {
 		if (CLASSES[c] == undefined) continue;
@@ -357,7 +364,19 @@ function hero(element) {
 	hero.y = container.find('[name="hero-y"]').val();
 	hero.hp = container.find('[name="hero-hp"]').val();
 	hero.stamina = container.find('[name="hero-stamina"]').val();
+	hero.className = container.find('[name="class-title"]').val();
+	hero.skills = getSkills(container, hero.className);
 	return hero;
+}
+
+function getSkills(container, className) {
+	var result = [];
+	var skills = $(container).find('.checkbox.' + className.replace(new RegExp(" ",'g'), '').toLowerCase() + ' input');
+	for (var i = 0; i < skills.length; i++) {
+		var currentSkill = $(skills[i]); 
+		result.push([currentSkill.attr('name'), currentSkill.prop('checked')]);
+	}
+	return result;
 }
 
 function populate() {
@@ -381,6 +400,12 @@ function constructSettingsFromConfig() {
 			$('#hero' + j + ' .x-title').html(getAlphabetChar(config['hero' + j].x - 1) + ' ');
 			$('#hero' + j + ' [name="hero-y"]').val(config['hero' + j].y);
 			$('#hero' + j + ' .y-title').html(config['hero' + j].y.toString() + ' ');
+			if (config['hero' + j].className != undefined) {
+				updateClass($('#hero' + j + ' .select-class li')[0], config['hero' + j].className.toString());
+			}
+			if (config['hero' + j].skills != undefined) {
+				updateSkills($('#hero' + j + ' .skills-container'), config['hero' + j].skills);
+			}
 		}
 	}
 	removeMonsterRows();
