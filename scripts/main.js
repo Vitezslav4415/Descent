@@ -216,6 +216,7 @@ function updateHand(element, value) {
 	var container = $(element).parents('.select-row');
 	var second = $(element).parents('.select-weapon').hasClass('second-select');
 	var twohand = $(element).parent().hasClass('twohand');
+	var oldTwoHand = container.find('.items-container').find('.hand2').hasClass('secondary'); 
 	var selector = '.hand';
 	if (second) selector += '2';
 	container.find('.items-container').find('.hand,.hand2').removeClass('secondary');
@@ -227,6 +228,9 @@ function updateHand(element, value) {
 		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	}
 	container.find('.items-container').find(twohand ? '.hand,.hand2' : selector).attr('src', src);
+	if (!twohand && oldTwoHand) {
+		clearHand(container.find('.items-selects').find('.select-weapon' + (second ? ':not(.second-select)' : '.second-select') + ' li')[0]);
+	}
 	if (twohand) {
 		container.find('.weapon-title').html(value + ' ');
 		container.find('.items-container').find('.hand2').addClass('secondary');
