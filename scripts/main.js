@@ -216,6 +216,8 @@ function updateHand(element, value) {
 	var container = $(element).parents('.select-row');
 	var second = $(element).parents('.select-weapon').hasClass('second-select');
 	var twohand = $(element).parent().hasClass('twohand');
+	var tierOne = $(element).parent().hasClass('tierone');
+	var relic = $(element).parent().hasClass('relic');
 	var oldTwoHand = container.find('.items-container').find('.hand2').hasClass('secondary'); 
 	var selector = '.hand';
 	if (second) selector += '2';
@@ -225,7 +227,9 @@ function updateHand(element, value) {
 		var classValue = container.find('input[name="class-title"]').attr('value');
 		src = 'images/classes_cards/' + classValue.replace(new RegExp(" ",'g'), '').toLowerCase() + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	} else {
-		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+		var tierFolder = tierOne ? 'tier_one' : 'tier_two';
+		if (relic) tierFolder = 'relic';
+		src = 'images/items_cards/' + tierFolder + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	}
 	container.find('.items-container').find(twohand ? '.hand,.hand2' : selector).attr('src', src);
 	if (!twohand && oldTwoHand) {
@@ -245,12 +249,16 @@ function updateHand(element, value) {
 
 function updateArmor(element, value) {
 	var container = $(element).parents('.select-row');
+	var tierOne = $(element).parent().hasClass('tierone');
+	var relic = $(element).parent().hasClass('relic');
 	var src;
 	if ($(element).parent().hasClass('classitem')) {
 		var classValue = container.find('input[name="class-title"]').attr('value');
 		src = 'images/classes_cards/' + classValue.replace(new RegExp(" ",'g'), '').toLowerCase() + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	} else {
-		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+		var tierFolder = tierOne ? 'tier_one' : 'tier_two';
+		if (relic) tierFolder = 'relic';
+		src = 'images/items_cards/' + tierFolder + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	}
 	container.find('.items-container').find('.armor').attr('src', src);
 	$(element).parents('.select-armor').find('.armor-title').html(value + ' ');
@@ -262,12 +270,16 @@ function updateItem(element, value) {
 	var second = $(element).parents('.select-item').hasClass('second-select');
 	var selector = '.item';
 	if (second) selector += '2';
+	var tierOne = $(element).parent().hasClass('tierone');
+	var relic = $(element).parent().hasClass('relic');
 	var src;
 	if ($(element).parent().hasClass('classitem')) {
 		var classValue = container.find('input[name="class-title"]').attr('value');
 		src = 'images/classes_cards/' + classValue.replace(new RegExp(" ",'g'), '').toLowerCase() + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	} else {
-		src = 'images/items_cards/tier_one/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
+		var tierFolder = tierOne ? 'tier_one' : 'tier_two';
+		if (relic) tierFolder = 'relic';
+		src = 'images/items_cards/' + tierFolder + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg';
 	}
 	container.find('.items-container').find(selector).attr('src', src);
 	$(element).parents('.select-item').find('.item-title').html(value + ' ');
@@ -379,11 +391,27 @@ function createHandSelectContent () {
 	var html = addOption('Clear', '', 'clearHand(this);');
 	for (var i = 0; i < ITEMS['hand'].length; i++) {
 		var item = ITEMS['hand'][i];
-		html += addOption(item[0] + ' ', 'hand', 'updateHand(this, \'' + item[0] + '\')');
+		html += addOption(item[0] + ' ', 'hand tierone', 'updateHand(this, \'' + item[0] + '\')');
 	}
 	for (var i = 0; i < ITEMS['hand2'].length; i++) {
 		var item = ITEMS['hand2'][i];
-		html += addOption(item[0] + ' ', 'hand twohand', 'updateHand(this, \'' + item[0] + '\')');
+		html += addOption(item[0] + ' ', 'hand twohand tierone', 'updateHand(this, \'' + item[0] + '\')');
+	}
+	for (var i = 0; i < ITEMS2['hand'].length; i++) {
+		var item = ITEMS2['hand'][i];
+		html += addOption(item[0] + ' ', 'hand tiertwo', 'updateHand(this, \'' + item[0] + '\')');
+	}
+	for (var i = 0; i < ITEMS2['hand2'].length; i++) {
+		var item = ITEMS2['hand2'][i];
+		html += addOption(item[0] + ' ', 'hand twohand tiertwo', 'updateHand(this, \'' + item[0] + '\')');
+	}
+	for (var i = 0; i < ITEMSR['hand'].length; i++) {
+		var item = ITEMSR['hand'][i];
+		html += addOption(item[0] + ' ', 'hand relic', 'updateHand(this, \'' + item[0] + '\')');
+	}
+	for (var i = 0; i < ITEMSR['hand2'].length; i++) {
+		var item = ITEMSR['hand2'][i];
+		html += addOption(item[0] + ' ', 'hand twohand relic', 'updateHand(this, \'' + item[0] + '\')');
 	}
 	var classItems = getSkillsItems(hand);
 	for (var i = 0; i < classItems.length; i++) {
@@ -400,7 +428,15 @@ function createArmorSelectContent () {
 	var html = addOption('Clear', '', 'clearArmor(this);');
 	for (var i = 0; i < ITEMS['armor'].length; i++) {
 		var item = ITEMS['armor'][i];
-		html += addOption(item[0] + ' ', 'armor', 'updateArmor(this, \'' + item[0] + '\')');
+		html += addOption(item[0] + ' ', 'armor tierone', 'updateArmor(this, \'' + item[0] + '\')');
+	}
+	for (var i = 0; i < ITEMS2['armor'].length; i++) {
+		var item = ITEMS2['armor'][i];
+		html += addOption(item[0] + ' ', 'armor tiertwo', 'updateArmor(this, \'' + item[0] + '\')');
+	}
+	for (var i = 0; i < ITEMSR['armor'].length; i++) {
+		var item = ITEMSR['armor'][i];
+		html += addOption(item[0] + ' ', 'armor relic', 'updateArmor(this, \'' + item[0] + '\')');
 	}
 	var classItems = getSkillsItems(armor);
 	for (var i = 0; i < classItems.length; i++) {
@@ -413,11 +449,19 @@ function createItemSelectContent () {
 	var html = addOption('Clear', '', 'clearItem(this);');
 	for (var i = 0; i < ITEMS['item'].length; i++) {
 		var itemObject = ITEMS['item'][i];
-		html += addOption(itemObject[0] + ' ', 'item', 'updateItem(this, \'' + itemObject[0] + '\')');
+		html += addOption(itemObject[0] + ' ', 'item tierone', 'updateItem(this, \'' + itemObject[0] + '\')');
+	}
+	for (var i = 0; i < ITEMS2['item'].length; i++) {
+		var itemObject = ITEMS2['item'][i];
+		html += addOption(itemObject[0] + ' ', 'item tiertwo', 'updateItem(this, \'' + itemObject[0] + '\')');
+	}
+	for (var i = 0; i < ITEMSR['item'].length; i++) {
+		var itemObject = ITEMSR['item'][i];
+		html += addOption(itemObject[0] + ' ', 'item relic', 'updateItem(this, \'' + itemObject[0] + '\')');
 	}
 	var classItems = getSkillsItems(item);
 	for (var i = 0; i < classItems.length; i++) {
-		html += addOption(classItems[i][0] + ' ', 'item classitem ' + classItems[i][1], 'updateItem(this, \'' + classItems[i][0] + '\')');
+		html += addOption(classItems[i][0] + ' ', 'item classitem tierone ' + classItems[i][1], 'updateItem(this, \'' + classItems[i][0] + '\')');
 	}
 	return html;
 }
@@ -520,7 +564,7 @@ function createItemsBlock() {
 	armorSelect.find('ul').append(createArmorSelectContent());
 	itemsSelects.append(armorSelect);
 	
-	var itemsSelect = $(createInputSelect('Select Item', 'weapon-item', 'select-item'));
+	var itemsSelect = $(createInputSelect('Select Item', 'item-title', 'select-item'));
 	itemsSelect.find('ul').append(createItemSelectContent());
 	itemsSelects.append(itemsSelect);
 	
