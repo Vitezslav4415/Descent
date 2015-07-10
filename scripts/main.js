@@ -80,12 +80,13 @@ function updateOption(element, value, isMonster) {
 		}
 	} else { //coordinate select
 		var selectedSize = value.charAt(0);
-		var selectedCooedinate = value.substr(1);
+		var selectedCoordinate = value.substr(1);
 		var parent = $(element).parents('.btn-group');
 		
 		if (parent.hasClass('select-x')) {
-			container.find('input[name="monster-x"]').attr('value',selectedCooedinate);
-			container.find('input[name="hero-x"]').attr('value',selectedCooedinate);
+			container.find('input[name="monster-x"]').attr('value',selectedCoordinate);
+			container.find('input[name="hero-x"]').attr('value',selectedCoordinate);
+			container.find('input[name="tile-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-x-size"]').attr('value',selectedSize);
 			container.find('.x-title').html($(element).html() + ' ');
 			if (!parent.hasClass('squared')) {
@@ -93,8 +94,9 @@ function updateOption(element, value, isMonster) {
 			}
 		} else {
 			container.find('.y-title').html($(element).html() + ' ');
-			container.find('input[name="monster-y"]').attr('value',selectedCooedinate);
-			container.find('input[name="hero-y"]').attr('value',selectedCooedinate);
+			container.find('input[name="monster-y"]').attr('value',selectedCoordinate);
+			container.find('input[name="hero-y"]').attr('value',selectedCoordinate);
+			container.find('input[name="tile-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-y-size"]').attr('value',selectedSize);
 			if (!parent.hasClass('squared')) {
 				container.find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
@@ -310,6 +312,42 @@ function clearItem(element) {
 	$(element).parents('.select-item').find('.item-title').html('Select Item ');
 }
 
+function updateTile(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.tile-title').html(value + ' ');
+	container.find('input[name="tile-title"]').attr('value',value);
+}
+
+function clearTile(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.tile-title').html('Select tile ');
+	container.find('input[name="tile-title"]').attr('value','');
+}
+
+function updateSide(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.side-title').html(value + ' ');
+	container.find('input[name="tile-side"]').attr('value',value);
+}
+
+function clearSide(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.side-title').html('Select tile ');
+	container.find('input[name="tile-side"]').attr('value','');
+}
+
+function updateAngle(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.angle-title').html(value + ' ');
+	container.find('input[name="tile-angle"]').attr('value',value);
+}
+
+function clearAngle(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.angle-title').html('Select tile ');
+	container.find('input[name="tile-angle"]').attr('value','');
+}
+
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
 }
@@ -342,7 +380,7 @@ function createItemsAndSearchSelect() {
 
 function createYSelectContent(oneCellOnly) {
 	var html = addOption('Clear', '', 'updateCoordinate(this, \'Clear\');');
-	for (var i = 1; i <= mapWidth; i++) {
+	for (var i = 0; i <= mapWidth; i++) {
 		html += addOption(i.toString(), 'oneCell', 'updateCoordinate(this, \'1' + i.toString() + '\');');
 		if (i <= mapWidth-1 && !oneCellOnly)
 			html += addOption(i.toString() + '-' + (i+1).toString(), 'twoCells', 'updateCoordinate(this, \'2' + i.toString() + '\');');
@@ -488,6 +526,30 @@ function createItemSelectContent() {
 	return html;
 }
 
+function createTileSelectContent() {
+	var html = addOption('Clear', '', 'clearTile(this);');
+	for (var i = 0; i < MAP_TILES_LIST.length; i++) {
+		html += addOption(MAP_TILES_LIST[i] + ' ', '', 'updateTile(this, \'' + MAP_TILES_LIST[i] + '\')');
+	}
+	return html;
+}
+
+function createSideSelectContent() {
+	var html = addOption('Clear', '', 'clearSide(this);');
+	html += addOption('A ', '', 'updateSide(this, \'A\')');
+	html += addOption('B ', '', 'updateSide(this, \'B\')');
+	return html;
+}
+
+function createAngleSelectContent() {
+	var html = addOption('Clear', '', 'clearAngle(this);');
+	html += addOption('0 ', '', 'updateAngle(this, \'0\')');
+	html += addOption('90 ', '', 'updateAngle(this, \'90\')');
+	html += addOption('180 ', '', 'updateAngle(this, \'180\')');
+	html += addOption('270 ', '', 'updateAngle(this, \'270\')');
+	return html;
+}
+
 function addUnitLine(line, title) {
 	line.addClass('select-row');
 	line.append(createInputSelect('Select ' + title, title + '-title', 'select-' + title));
@@ -535,6 +597,24 @@ function addHeroLine(number) {
 	heroLine.append(createSackAndSearchBlock());
 	heroLine.append($('<img>').attr('src', ''));
 	$('#hero' + number.toString()).append(heroLine);
+}
+
+function addMapTileLine() {
+	var mapTileLine = $('<div>');
+	addUnitLine(mapTileLine, 'tile');
+	mapTileLine.find('input[type="text"]').remove();
+	mapTileLine.find('.select-tile').after(createInputSelect('Select side', 'side-title', 'select-side'));
+	mapTileLine.append(createInputSelect('Select angle', 'angle-title', 'select-angle'));
+	mapTileLine.append($('<input type="hidden" name="tile-side" value=""/>'));
+	mapTileLine.append($('<input type="hidden" name="tile-angle" value=""/>'));
+	
+	mapTileLine.find('.select-tile ul').append(createTileSelectContent());
+	mapTileLine.find('.select-side ul').append(createSideSelectContent());
+	mapTileLine.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
+	mapTileLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	mapTileLine.find('.select-angle ul').append(createAngleSelectContent());
+	$('#tiles-container').append(mapTileLine);
+	return mapTileLine;
 }
 
 function createSkillsBlock() {
@@ -721,6 +801,22 @@ function getSackAndSearch(container) {
 	return result;
 }
 
+function getMapTiles() {
+	var result = [];
+	var tiles = $('#tiles-container .select-row');
+	for (var i = 0; i < tiles.length; i++) {
+		var container = $(tiles[i]);
+		var tile = {};
+		tile.title = container.find('[name="tile-title"]').val();
+		tile.side = container.find('[name="tile-side"]').val();
+		tile.x = container.find('[name="tile-x"]').val();
+		tile.y = container.find('[name="tile-y"]').val();
+		tile.angle = container.find('[name="tile-angle"]').val();
+		result.push(tile);
+	}
+	return result;
+}
+
 function populate() {
 	collectData();
 	updateConfig();
@@ -735,7 +831,7 @@ function constructSettingsFromConfig() {
 	for (var i=1; i <= 4; i++) {
 		var j = i.toString();
 		var heroConfig = config['hero' + j.toString()];
-		if (heroConfig.title != "") {
+		if (heroConfig.title != "" && heroConfig.title != undefined) {
 			var heroSelector = '#hero' + j.toString();
 			updateHero($(heroSelector + ' .select-hero li')[0],heroConfig.title);
 			$(heroSelector + ' [name="hero-hp"]').val(heroConfig.hp);
@@ -775,28 +871,43 @@ function constructSettingsFromConfig() {
 		}
 	}
 	removeMonsterRows();
-	for (var i = 0; i < config.monsters.length; i++) {
-		var monster = config.monsters[i];
-		if (monster.title != '') {
-			var monsterLine = addMonsterLine();
-			var width = monster.vertical ? MONSTERS[monster.title].width : MONSTERS[monster.title].height;
-			var height = monster.vertical ? MONSTERS[monster.title].height : MONSTERS[monster.title].width;
-			
-			var monsterSelectUnit = monsterLine.find('[onclick="updateMonster(this, \'' + monster.title + '\');"]');
-			var correctMonsterSelectUnit;
-			
-			if (monster.master && $(monsterSelectUnit[0]).html().indexOf('master') > -1 || !monster.master && !($(monsterSelectUnit[0]).html().indexOf('master') > -1)) {
-				correctMonsterSelectUnit = monsterSelectUnit[0];
-			} else {
-				correctMonsterSelectUnit = monsterSelectUnit[1];
+	if (config.monsters != undefined) {
+		for (var i = 0; i < config.monsters.length; i++) {
+			var monster = config.monsters[i];
+			if (monster.title != '') {
+				var monsterLine = addMonsterLine();
+				var width = monster.vertical ? MONSTERS[monster.title].width : MONSTERS[monster.title].height;
+				var height = monster.vertical ? MONSTERS[monster.title].height : MONSTERS[monster.title].width;
+				
+				var monsterSelectUnit = monsterLine.find('[onclick="updateMonster(this, \'' + monster.title + '\');"]');
+				var correctMonsterSelectUnit;
+				
+				if (monster.master && $(monsterSelectUnit[0]).html().indexOf('master') > -1 || !monster.master && !($(monsterSelectUnit[0]).html().indexOf('master') > -1)) {
+					correctMonsterSelectUnit = monsterSelectUnit[0];
+				} else {
+					correctMonsterSelectUnit = monsterSelectUnit[1];
+				}
+				updateMonster(correctMonsterSelectUnit, monster.title);
+				
+				var xValue = width.toString() + monster.x.toString();
+				updateCoordinate(monsterLine.find('.select-x [onclick="updateCoordinate(this, \'' + xValue + '\');"]'), xValue);
+				var yValue = height.toString() + monster.y.toString();
+				updateCoordinate(monsterLine.find('.select-y [onclick="updateCoordinate(this, \'' + yValue + '\');"]'), yValue);
+				monsterLine.find('input[name="monster-hp"]').val(monster.hp);
 			}
-			updateMonster(correctMonsterSelectUnit, monster.title);
-			
-			var xValue = width.toString() + monster.x.toString();
-			updateCoordinate(monsterLine.find('.select-x [onclick="updateCoordinate(this, \'' + xValue + '\');"]'), xValue);
-			var yValue = height.toString() + monster.y.toString();
-			updateCoordinate(monsterLine.find('.select-y [onclick="updateCoordinate(this, \'' + yValue + '\');"]'), yValue);
-			monsterLine.find('input[name="monster-hp"]').val(monster.hp);
+		}
+	}
+	if (config.tiles != undefined) {
+		for (var i = 0 ; i < config.tiles.length; i++) {
+			var container = addMapTileLine();
+			var tile = config.tiles[i];
+			updateTile(container.find('.select-tile li')[0], tile.title);
+			updateSide(container.find('.select-side li')[0], tile.side);
+			container.find('[name="tile-x"]').val(tile.x);
+			container.find('.x-title').html(getAlphabetChar(tile.x - 1) + ' ');
+			container.find('[name="tile-y"]').val(tile.y);
+			container.find('.y-title').html(tile.y.toString() + ' ');
+			updateAngle(container.find('.select-angle li')[0], tile.angle);
 		}
 	}
 	/*under construction*/;
@@ -820,6 +931,7 @@ function collectData() {
 	config.hero2 = hero($('#hero2 .select-row'));
 	config.hero3 = hero($('#hero3 .select-row'));
 	config.hero4 = hero($('#hero4 .select-row'));
+	config.tiles = getMapTiles();
 }
 
 function adjustAct() {
