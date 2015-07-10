@@ -830,18 +830,23 @@ function constructMapFromConfig() {
 		var tile = config.tiles[i];
 		var tileObject = $('<div>');
 		var tileImage = $('<img>');
+		var folder = 'images/map_tiles/';
+		var angle = tile.angle;
+		if (angle == 90 || angle == 270){
+			folder += 'vertical/';
+			angle -= 90;
+		}
 		tileObject.css({
 			'position' : 'absolute',
 			'left' : (tile.x * cellSize).toString() + 'px',
 			'top' : (tile.y * cellSize).toString() + 'px'
 		});
 		tileImage.css({
-			'-ms-transform' : 'rotate(' + tile.angle + 'deg)',
-		    '-webkit-transform' : 'rotate(' + tile.angle + 'deg)',
-		    'transform' : 'rotate(' + tile.angle + 'deg)',
-		    'transform-origin': '0 0'
+			'-ms-transform' : 'rotate(' + angle + 'deg)',
+		    '-webkit-transform' : 'rotate(' + angle + 'deg)',
+		    'transform' : 'rotate(' + angle + 'deg)'
 		});
-		tileImage.attr('src', 'images/map_tiles/' + tile.title + tile.side + '.png');
+		tileImage.attr('src', folder + tile.title + tile.side + '.png');
 		tileObject.append(tileImage);
 		$('#map .map').append(tileObject);
 	}
