@@ -159,7 +159,8 @@ body {
 .select-row > .btn-group,
 .select-row > input[type="text"],
 .select-row > button,
-.items-selects > .btn-group {
+.items-selects > .btn-group,
+.sack-selects > .btn-group {
 	margin-right: 15px;
 }
 
@@ -191,17 +192,23 @@ body {
 	display: inline-block;
 }
 
-.items-container img {
+.items-container img,
+.sack-container img {
 	margin: 10px 15px 10px 0;
 	display: inline-block;
 	width: 128px;
 	height: 192px;
 }
 
-.items-selects > .btn-group > button {
+.items-selects > .btn-group > button,
+.sack-selects > .btn-group > button {
 	width: 128px;
 }
 
 .secondary {
 	opacity: 0.5;
+}
+
+.sack-container button {
+	display: inline-block;
 }

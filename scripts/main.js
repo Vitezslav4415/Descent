@@ -326,7 +326,21 @@ function getAlphabetChar(number) {
 	return result += ALPHABET.charAt(number%26);
 }
 
-function createYSelectContent (oneCellOnly) {
+function createItemsAndSearchSelect() {
+	var select = $(createInputSelect('Select Item or Search card', 'sack-title', 'select-sack'));
+	var ul = select.find('ul');
+	ul.append(addOption('Remove', '', 'removeFromSack(this);'));
+	ul.append($('<li role="separator" class="divider"></li>'));
+	ul.append(createSearchSelectContent());
+	ul.append($('<li role="separator" class="divider"></li>'));
+	ul.append(createHandSelectContent().replace(new RegExp("updateHand",'g'), 'updateSackItem'));
+	ul.append(createArmorSelectContent().replace(new RegExp("updateArmor",'g'), 'updateSackItem'));
+	ul.append(createItemSelectContent().replace(new RegExp("updateItem",'g'), 'updateSackItem'));
+	select.find('.hand,.armor,.item').removeClass('hand armor item');
+	return select;
+}
+
+function createYSelectContent(oneCellOnly) {
 	var html = addOption('Clear', '', 'updateCoordinate(this, \'Clear\');');
 	for (var i = 1; i <= mapWidth; i++) {
 		html += addOption(i.toString(), 'oneCell', 'updateCoordinate(this, \'1' + i.toString() + '\');');
@@ -338,7 +352,7 @@ function createYSelectContent (oneCellOnly) {
 	return html;
 }
 
-function createXSelectContent (oneCellOnly) {
+function createXSelectContent(oneCellOnly) {
 	var html = addOption('Clear', '', 'updateCoordinate(this, \'Clear\');');
 	for (var i = 1; i <= mapHeight; i++) {
 		html += addOption(getAlphabetChar(i-1), 'oneCell', 'updateCoordinate(this, \'1' + i.toString() + '\');');
@@ -350,7 +364,7 @@ function createXSelectContent (oneCellOnly) {
 	return html;
 }
 
-function createMonsterSelectContent () {
+function createMonsterSelectContent() {
 	var html = '';
 	for (var i = 0; i < MONSTERS_LIST.length; i++) {
 		html += addOption(MONSTERS_LIST[i][0] + ' master', '', 'updateMonster(this, \'' + MONSTERS_LIST[i][0] + '\');');
@@ -359,7 +373,7 @@ function createMonsterSelectContent () {
 	return html;
 }
 
-function createHeroSelectContent () {
+function createHeroSelectContent() {
 	var html = addOption('Clear', '', 'clearHero(this);');
 	for (var i = 0; i < HEROES_LIST.length; i++) {
 		html += addOption(HEROES_LIST[i][0] + ' ', '', 'updateHero(this, \'' + HEROES_LIST[i][0] + '\');');
@@ -367,7 +381,7 @@ function createHeroSelectContent () {
 	return html;
 }
 
-function createClassSelectContent () {
+function createClassSelectContent() {
 	var html = addOption('Clear', '', 'clearClass(this);');
 	for (var i = 0; i < ARCHETYPES_LIST.length; i++) {
 		for (var j = 0; j < ARCHETYPES_LIST[i].classes.length; j++) {
@@ -378,7 +392,7 @@ function createClassSelectContent () {
 	return html;
 }
 
-function createArchetypeSelectContent () {
+function createArchetypeSelectContent() {
 	var html = addOption('Clear', '', 'clearArchetype(this);');
 	for (var i = 0; i < ARCHETYPES_LIST.length; i++) {
 		var title = ARCHETYPES_LIST[i].title;
@@ -387,7 +401,15 @@ function createArchetypeSelectContent () {
 	return html;
 }
 
-function createHandSelectContent () {
+function createSearchSelectContent() {
+	var html = '';
+	for (var i = 0; i < SEARCH_ITEMS_LIST.length; i++) {
+		html += addOption(SEARCH_ITEMS_LIST[i] + ' ', 'search', 'updateSackItem(this, \'' + SEARCH_ITEMS_LIST[i] + '\')');
+	}
+	return html;
+}
+
+function createHandSelectContent() {
 	var html = addOption('Clear', '', 'clearHand(this);');
 	for (var i = 0; i < ITEMS['hand'].length; i++) {
 		var item = ITEMS['hand'][i];
@@ -424,7 +446,7 @@ function createHandSelectContent () {
 	return html;
 }
 
-function createArmorSelectContent () {
+function createArmorSelectContent() {
 	var html = addOption('Clear', '', 'clearArmor(this);');
 	for (var i = 0; i < ITEMS['armor'].length; i++) {
 		var item = ITEMS['armor'][i];
@@ -445,7 +467,7 @@ function createArmorSelectContent () {
 	return html;
 }
 
-function createItemSelectContent () {
+function createItemSelectContent() {
 	var html = addOption('Clear', '', 'clearItem(this);');
 	for (var i = 0; i < ITEMS['item'].length; i++) {
 		var itemObject = ITEMS['item'][i];
@@ -510,6 +532,7 @@ function addHeroLine(number) {
 	heroLine.append($('<input type="hidden" name="class-title" value=""/>'));
 	heroLine.append(createSkillsBlock());
 	heroLine.append(createItemsBlock());
+	heroLine.append(createSackAndSearchBlock());
 	heroLine.append($('<img>').attr('src', ''));
 	$('#hero' + number.toString()).append(heroLine);
 }
@@ -581,12 +604,56 @@ function createItemsBlock() {
 	return html;
 }
 
+function createSackAndSearchBlock() {
+	var html = $('<div>').addClass('sack-block');
+	var sackContainer = $('<div>').addClass('sack-container');
+	sackContainer.append($('<h1>Sack and Search items</h1>'));
+	var additionButton = $('<button>').attr('type','button').addClass('btn btn-success').attr('aria-expanded','false').attr('onclick', 'addToSack(this);');
+	additionButton.html('Add Item or Search card');
+	sackContainer.append(additionButton);
+	html.append(sackContainer);
+	
+	var sackSelects = $('<div>').addClass('sack-selects');
+	html.append(sackSelects);
+	return html;
+}
+
 function createInputSelect(title, titleClass, additionalClass) {
 	var select = $('<div>').addClass('btn-group').addClass(additionalClass);
 	var button = $('<button>').attr('type','button').addClass('btn btn-default dropdown-toggle').attr('data-toggle','dropdown').attr('aria-expanded','false');
 	button.append($('<span>' + title + ' </span>').addClass(titleClass)).append($('<span>').addClass('caret'));
 	select.append(button).append($('<ul>').addClass('dropdown-menu').attr('role','menu'));
 	return select;
+}
+
+function addToSack(element) {
+	var container = $(element).parents('.select-row');
+	var sackAttribute = 'sack' + sackNumber.toString();
+	container.find('.sack-container button').before('<img src="images/search_cards/flipped.jpg" item="Flipped" sack="' + sackAttribute + '"/>');
+	container.find('.sack-selects').append(createItemsAndSearchSelect().attr('sack', sackAttribute));
+	sackNumber += 1;
+	return sackAttribute;
+}
+
+function removeFromSack(element) {
+	var elementAttr = $(element).parents('.select-sack').attr('sack');
+	$(element).parents('.select-row').find('[sack="' + elementAttr + '"]').remove();
+}
+
+function updateSackItem(element, value) {
+	var container = $(element).parents('.select-row');
+	var parent = $(element).parent();
+	var search = parent.hasClass('search');
+	var tierOne = parent.hasClass('tierone');
+	var relic = parent.hasClass('relic');
+	var classItem = parent.hasClass('classitem');
+	var elementAttr = $(element).parents('.select-sack').attr('sack');
+	var folder = search ? 'search_cards' : 'items_cards/' + (tierOne ? 'tier_one' : relic ? 'relic' : 'tier_two');
+	if (classItem) {
+		folder = 'classes_cards/' + parent.attr('class').replace(new RegExp("classitem",'g'), '').replace(new RegExp("twohand",'g'), '').replace(new RegExp(" ",'g'), '');
+	}
+	container.find('img[sack="' + elementAttr + '"]').attr('src', 'images/' + folder + '/' + value.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.jpg').attr('item', value);
+	container.find('div[sack="' + elementAttr + '"]').find('.sack-title').html(value + ' ');
 }
 
 function getSkillsItems(type) {
@@ -621,6 +688,7 @@ function hero(element) {
 	hero.className = container.find('[name="class-title"]').val();
 	hero.skills = getSkills(container, hero.className);
 	hero.items = getItems(container);
+	hero.sack = getSackAndSearch(container);
 	return hero;
 }
 
@@ -644,6 +712,15 @@ function getItems(container) {
 	return items;
 }
 
+function getSackAndSearch(container) {
+	var result = [];
+	var sack = $(container).find('[item]');
+	for (var i = 0; i < sack.length; i++) {
+		result.push($(sack[i]).attr('item'));
+	}
+	return result;
+}
+
 function populate() {
 	collectData();
 	updateConfig();
@@ -657,35 +734,43 @@ function constructMapFromConfig() {
 function constructSettingsFromConfig() {
 	for (var i=1; i <= 4; i++) {
 		var j = i.toString();
-		if (config['hero' + j].title != "") {
-			updateHero($('#hero' + j + ' .select-hero li')[0],config['hero' + j].title);
-			$('#hero' + j + ' [name="hero-hp"]').val(config['hero' + j].hp);
-			$('#hero' + j + ' [name="hero-stamina"]').val(config['hero' + j].stamina);
-			$('#hero' + j + ' [name="hero-x"]').val(config['hero' + j].x);
-			$('#hero' + j + ' .x-title').html(getAlphabetChar(config['hero' + j].x - 1) + ' ');
-			$('#hero' + j + ' [name="hero-y"]').val(config['hero' + j].y);
-			$('#hero' + j + ' .y-title').html(config['hero' + j].y.toString() + ' ');
-			if (config['hero' + j].className != undefined) {
-				updateClass($('#hero' + j + ' .select-class li')[0], config['hero' + j].className.toString());
+		var heroConfig = config['hero' + j.toString()];
+		if (heroConfig.title != "") {
+			var heroSelector = '#hero' + j.toString();
+			updateHero($(heroSelector + ' .select-hero li')[0],heroConfig.title);
+			$(heroSelector + ' [name="hero-hp"]').val(heroConfig.hp);
+			$(heroSelector + ' [name="hero-stamina"]').val(heroConfig.stamina);
+			$(heroSelector + ' [name="hero-x"]').val(heroConfig.x);
+			$(heroSelector + ' .x-title').html(getAlphabetChar(heroConfig.x - 1) + ' ');
+			$(heroSelector + ' [name="hero-y"]').val(heroConfig.y);
+			$(heroSelector + ' .y-title').html(heroConfig.y.toString() + ' ');
+			if (heroConfig.className != undefined) {
+				updateClass($(heroSelector + ' .select-class li')[0], heroConfig.className.toString());
 			}
-			if (config['hero' + j].skills != undefined) {
-				updateSkills($('#hero' + j + ' .skills-container'), config['hero' + j].skills);
-				adjustSkillsImages($('#hero' + j + ' .skills-container'));
+			if (heroConfig.skills != undefined) {
+				updateSkills($(heroSelector + ' .skills-container'), heroConfig.skills);
+				adjustSkillsImages($(heroSelector + ' .skills-container'));
 			}
-			if (config['hero' + j].items != undefined && config['hero' + j].items.hand != undefined) {
-				updateHand($('#hero' + j + ' .select-weapon:not(.second-select) [onclick="updateHand(this, \'' + config['hero' + j].items.hand + '\')"]'), config['hero' + j].items.hand);
+			if (heroConfig.items != undefined && heroConfig.items.hand != undefined) {
+				updateHand($(heroSelector + ' .select-weapon:not(.second-select) [onclick="updateHand(this, \'' + heroConfig.items.hand + '\')"]'), heroConfig.items.hand);
 			}
-			if (config['hero' + j].items != undefined && config['hero' + j].items.hand2 != undefined) {
-				updateHand($('#hero' + j + ' .select-weapon.second-select [onclick="updateHand(this, \'' + config['hero' + j].items.hand2 + '\')"]'), config['hero' + j].items.hand2);
+			if (heroConfig.items != undefined && heroConfig.items.hand2 != undefined) {
+				updateHand($(heroSelector + ' .select-weapon.second-select [onclick="updateHand(this, \'' + heroConfig.items.hand2 + '\')"]'), heroConfig.items.hand2);
 			}
-			if (config['hero' + j].items != undefined && config['hero' + j].items.armor != undefined) {
-				updateArmor($('#hero' + j + ' .select-armor [onclick="updateArmor(this, \'' + config['hero' + j].items.armor + '\')"]'), config['hero' + j].items.armor);
+			if (heroConfig.items != undefined && heroConfig.items.armor != undefined) {
+				updateArmor($(heroSelector + ' .select-armor [onclick="updateArmor(this, \'' + heroConfig.items.armor + '\')"]'), heroConfig.items.armor);
 			}
-			if (config['hero' + j].items != undefined && config['hero' + j].items.item != undefined) {
-				updateItem($('#hero' + j + ' .select-item:not(.second-select) [onclick="updateItem(this, \'' + config['hero' + j].items.item + '\')"]'), config['hero' + j].items.item);
+			if (heroConfig.items != undefined && heroConfig.items.item != undefined) {
+				updateItem($(heroSelector + ' .select-item:not(.second-select) [onclick="updateItem(this, \'' + heroConfig.items.item + '\')"]'), heroConfig.items.item);
 			}
-			if (config['hero' + j].items != undefined && config['hero' + j].items.item2 != undefined) {
-				updateItem($('#hero' + j + ' .select-item.second-select [onclick="updateItem(this, \'' + config['hero' + j].items.item2 + '\')"]'), config['hero' + j].items.item2);
+			if (heroConfig.items != undefined && heroConfig.items.item2 != undefined) {
+				updateItem($(heroSelector + ' .select-item.second-select [onclick="updateItem(this, \'' + heroConfig.items.item2 + '\')"]'), heroConfig.items.item2);
+			}
+			if (heroConfig.sack != undefined) {
+				for (var k = 0; k < heroConfig.sack.length; k++) {
+					var sackAttribute = addToSack($(heroSelector + ' .sack-container button'));
+					updateSackItem($(heroSelector + ' [sack="' + sackAttribute + '"] [onclick="updateSackItem(this, \'' + heroConfig.sack[k] + '\')"]'), heroConfig.sack[k]);
+				}
 			}
 		}
 	}
