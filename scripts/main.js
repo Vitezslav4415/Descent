@@ -825,6 +825,26 @@ function populate() {
 
 function constructMapFromConfig() {
 	/*under construction*/;
+	$('#map .map').html('');
+	for (var i = 0; i < config.tiles.length; i++) {
+		var tile = config.tiles[i];
+		var tileObject = $('<div>');
+		var tileImage = $('<img>');
+		tileObject.css({
+			'position' : 'absolute',
+			'left' : (tile.x * cellSize).toString() + 'px',
+			'top' : (tile.y * cellSize).toString() + 'px'
+		});
+		tileImage.css({
+			'-ms-transform' : 'rotate(' + tile.angle + 'deg)',
+		    '-webkit-transform' : 'rotate(' + tile.angle + 'deg)',
+		    'transform' : 'rotate(' + tile.angle + 'deg)',
+		    'transform-origin': '0 0'
+		});
+		tileImage.attr('src', 'images/map_tiles/' + tile.title + tile.side + '.png');
+		tileObject.append(tileImage);
+		$('#map .map').append(tileObject);
+	}
 }
 
 function constructSettingsFromConfig() {
@@ -910,7 +930,6 @@ function constructSettingsFromConfig() {
 			updateAngle(container.find('.select-angle li')[0], tile.angle);
 		}
 	}
-	/*under construction*/;
 }
 
 function updateConfig() {
