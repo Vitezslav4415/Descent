@@ -748,12 +748,11 @@ function monster(element) {
 	var container = $(element);
 	var monster = {};
 	monster.title = container.find('[name="monster-title"]').val();
-	monster.master = container.find('[name="master"]').val();
+	monster.master = container.find('[name="master"]').val() == 'true';
 	monster.x = container.find('[name="monster-x"]').val();
 	monster.y = container.find('[name="monster-y"]').val();
 	monster.vertical = container.find('[name="monster-x-size"]').val() < container.find('[name="monster-y-size"]').val();
 	monster.hp = container.find('[name="monster-hp"]').val();
-	monster.stamina = container.find('[name="monster-stamina"]').val();
 	return monster;
 }
 
@@ -857,6 +856,8 @@ function constructMapFromConfig() {
 		var monster = config.monsters[i];
 		var monsterObject = $('<div>');
 		var monsterImage = $('<img>');
+		var monsterHp = $('<div>').addClass('hit-points');
+		monsterHp.html(monster.hp.toString());
 		var folder = 'images/monsters_tokens/';
 		if (monster.vertical) folder += 'vertical/';
 		monsterObject.css({
@@ -864,8 +865,9 @@ function constructMapFromConfig() {
 			'left' : (monster.x * cellSize).toString() + 'px',
 			'top' : (monster.y * cellSize).toString() + 'px'
 		});
-		monsterImage.attr('src', folder + monster.title.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.png');
+		monsterImage.attr('src', folder + monster.title.replace(new RegExp(" ",'g'), '_').toLowerCase() + (monster.master ? '_master.png' : '.png'));
 		monsterObject.append(monsterImage);
+		monsterObject.append(monsterHp);
 		$('#map .figures').append(monsterObject);
 	}
 	
@@ -875,19 +877,37 @@ function constructMapFromConfig() {
 	addHeroToMap(config.hero4);
 }
 
-function addHeroToMap(heroConfig) {
-	var hero = heroConfig;
-	var heroObejct = $('<div>');
+function addHeroToMap(hero) {
+	var heroObject = $('<div>');
 	var heroImage = $('<img>');
+	var heroHp = $('<div>').addClass('hit-points');
+	heroHp.html(hero.hp.toString());
+	var heroStamina = $('<div>').addClass('stamina');
+	heroStamina.html(hero.stamina.toString());
 	var folder = 'images/heroes_tokens/';
-	heroObejct.css({
+	heroObject.css({
 		'position' : 'absolute',
 		'left' : (hero.x * cellSize).toString() + 'px',
 		'top' : (hero.y * cellSize).toString() + 'px'
 	});
 	heroImage.attr('src', folder + hero.title.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.png');
-	heroObejct.append(heroImage);
-	$('#map .figures').append(heroObejct);
+	if (hero.title == 'Leoric of the book') {
+		var aura = $('<div>');
+		aura.css({
+			'position' : 'absolute',
+			'left' : '-' + (3 * cellSize).toString() + 'px',
+			'top' : '-' + (3 * cellSize).toString() + 'px',
+			'width' : (7 * cellSize).toString() + 'px',
+			'height' : (7 * cellSize).toString() + 'px',
+			'border' : '2px solid gold',
+			'border-radius' : (cellSize / 2).toString() + 'px'
+		});
+		heroObject.append(aura);
+	}
+	heroObject.append(heroImage);
+	heroObject.append(heroHp);
+	heroObject.append(heroStamina);
+	$('#map .figures').append(heroObject);
 }
 
 function constructSettingsFromConfig() {
