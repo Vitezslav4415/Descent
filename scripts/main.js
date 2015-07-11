@@ -826,6 +826,8 @@ function populate() {
 function constructMapFromConfig() {
 	/*under construction*/;
 	$('#map .map').html('');
+	$('#map .figures').html('');
+	
 	for (var i = 0; i < config.tiles.length; i++) {
 		var tile = config.tiles[i];
 		var tileObject = $('<div>');
@@ -850,6 +852,42 @@ function constructMapFromConfig() {
 		tileObject.append(tileImage);
 		$('#map .map').append(tileObject);
 	}
+	
+	for (var i = 0; i < config.monsters.length; i++) {
+		var monster = config.monsters[i];
+		var monsterObject = $('<div>');
+		var monsterImage = $('<img>');
+		var folder = 'images/monsters_tokens/';
+		if (monster.vertical) folder += 'vertical/';
+		monsterObject.css({
+			'position' : 'absolute',
+			'left' : (monster.x * cellSize).toString() + 'px',
+			'top' : (monster.y * cellSize).toString() + 'px'
+		});
+		monsterImage.attr('src', folder + monster.title.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.png');
+		monsterObject.append(monsterImage);
+		$('#map .figures').append(monsterObject);
+	}
+	
+	addHeroToMap(config.hero1);
+	addHeroToMap(config.hero2);
+	addHeroToMap(config.hero3);
+	addHeroToMap(config.hero4);
+}
+
+function addHeroToMap(heroConfig) {
+	var hero = heroConfig;
+	var heroObejct = $('<div>');
+	var heroImage = $('<img>');
+	var folder = 'images/heroes_tokens/';
+	heroObejct.css({
+		'position' : 'absolute',
+		'left' : (hero.x * cellSize).toString() + 'px',
+		'top' : (hero.y * cellSize).toString() + 'px'
+	});
+	heroImage.attr('src', folder + hero.title.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.png');
+	heroObejct.append(heroImage);
+	$('#map .figures').append(heroObejct);
 }
 
 function constructSettingsFromConfig() {
