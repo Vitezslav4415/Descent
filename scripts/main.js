@@ -87,6 +87,8 @@ function updateOption(element, value, isMonster) {
 			container.find('input[name="monster-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="hero-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="tile-x"]').attr('value',selectedCoordinate);
+			container.find('input[name="door-x"]').attr('value',selectedCoordinate);
+			container.find('input[name="xs-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-x-size"]').attr('value',selectedSize);
 			container.find('.x-title').html($(element).html() + ' ');
 			if (!parent.hasClass('squared')) {
@@ -97,6 +99,8 @@ function updateOption(element, value, isMonster) {
 			container.find('input[name="monster-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="hero-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="tile-y"]').attr('value',selectedCoordinate);
+			container.find('input[name="door-y"]').attr('value',selectedCoordinate);
+			container.find('input[name="xs-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-y-size"]').attr('value',selectedSize);
 			if (!parent.hasClass('squared')) {
 				container.find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
@@ -348,6 +352,42 @@ function clearAngle(element) {
 	container.find('input[name="tile-angle"]').attr('value','');
 }
 
+function updateDoor(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.door-title').html(value + ' ');
+	container.find('input[name="door-title"]').attr('value',value);
+}
+
+function clearDoor(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.door-title').html('Select door ');
+	container.find('input[name="door-title"]').attr('value','');
+}
+
+function updateDirection(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.direction-title').html(value + ' ');
+	container.find('input[name="door-direction"]').attr('value',value);
+}
+
+function clearDirection(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.direction-title').html('Select direction ');
+	container.find('input[name="door-direction"]').attr('value','');
+}
+
+function updateXs(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.xs-title').html(value + ' ');
+	container.find('input[name="xs-title"]').attr('value',value);
+}
+
+function clearXs(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.xs-title').html('Select X ');
+	container.find('input[name="xs-title"]').attr('value','');
+}
+
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
 }
@@ -550,15 +590,38 @@ function createAngleSelectContent() {
 	return html;
 }
 
+function createDoorSelectContent() {
+	var html = addOption('Clear', '', 'clearDoor(this);');
+	for (var i = 0; i < DOORS_LIST.length; i++) {
+		html += addOption(DOORS_LIST[i] + ' ', '', 'updateDoor(this, \'' + DOORS_LIST[i] + '\')');
+	}
+	return html;
+}
+
+function createDirectionSelectContent() {
+	var html = addOption('Clear', '', 'clearDirection(this);');
+	html += addOption('horizontal ', '', 'updateDirection(this, \'horizontal\')');
+	html += addOption('vertical ', '', 'updateDirection(this, \'vertical\')');
+	return html;
+}
+
+function createXsSelectContent() {
+	var html = addOption('Clear', '', 'clearXs(this);');
+	for (var i = 0; i < BLOCKS_LIST.length; i++) {
+		html += addOption(BLOCKS_LIST[i] + ' ', '', 'updateXs(this, \'' + BLOCKS_LIST[i] + '\')');
+	}
+	return html;
+}
+
 function addUnitLine(line, title) {
 	line.addClass('select-row');
-	line.append(createInputSelect('Select ' + title, title + '-title', 'select-' + title));
+	line.append(createInputSelect('Select ' + title, title.toLowerCase() + '-title', 'select-' + title.toLowerCase()));
 	line.append(createInputSelect('Select X coordinate', 'x-title', 'select-x'));
 	line.append(createInputSelect('Select Y coordinate', 'y-title', 'select-y'));
-	line.append($('<input type="text" name="' + title + '-hp" class="form-control" placeholder="Set HP" value=""/>'));
-	line.append($('<input type="hidden" name="' + title + '-title" value=""/>'));
-	line.append($('<input type="hidden" name="' + title + '-x" value=""/>'));
-	line.append($('<input type="hidden" name="' + title + '-y" value=""/>'));
+	line.append($('<input type="text" name="' + title.toLowerCase() + '-hp" class="form-control" placeholder="Set HP" value=""/>'));
+	line.append($('<input type="hidden" name="' + title.toLowerCase() + '-title" value=""/>'));
+	line.append($('<input type="hidden" name="' + title.toLowerCase() + '-x" value=""/>'));
+	line.append($('<input type="hidden" name="' + title.toLowerCase() + '-y" value=""/>'));
 }
 
 function addMonsterLine() {
@@ -615,6 +678,33 @@ function addMapTileLine() {
 	mapTileLine.find('.select-angle ul').append(createAngleSelectContent());
 	$('#tiles-container').append(mapTileLine);
 	return mapTileLine;
+}
+
+function addDoorLine() {
+	var doorLine = $('<div>');
+	addUnitLine(doorLine, 'door');
+	doorLine.find('input[type="text"]').remove();
+	doorLine.find('.select-door').after(createInputSelect('Select direction', 'direction-title', 'select-direction'));
+	doorLine.append($('<input type="hidden" name="door-direction" value=""/>'));
+	
+	doorLine.find('.select-door ul').append(createDoorSelectContent());
+	doorLine.find('.select-direction ul').append(createDirectionSelectContent());
+	doorLine.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
+	doorLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	$('#doors-container').append(doorLine);
+	return doorLine;
+}
+
+function addXsLine() {
+	var xLine = $('<div>');
+	addUnitLine(xLine, 'Xs');
+	xLine.find('input[type="text"]').remove();
+	
+	xLine.find('.select-xs ul').append(createXsSelectContent());
+	xLine.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
+	xLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	$('#xs-container').append(xLine);
+	return xLine;
 }
 
 function createSkillsBlock() {
@@ -816,6 +906,35 @@ function getMapTiles() {
 	return result;
 }
 
+function getDoors() {
+	var result = [];
+	var doors = $('#doors-container .select-row');
+	for (var i = 0; i < doors.length; i++) {
+		var container = $(doors[i]);
+		var door = {};
+		door.title = container.find('[name="door-title"]').val();
+		door.vertical = container.find('[name="door-direction"]').val() == 'vertical';
+		door.x = container.find('[name="door-x"]').val();
+		door.y = container.find('[name="door-y"]').val();
+		result.push(door);
+	}
+	return result;
+}
+
+function getXs() {
+	var result = [];
+	var xs = $('#xs-container .select-row');
+	for (var i = 0; i < xs.length; i++) {
+		var container = $(xs[i]);
+		var x = {};
+		x.title = container.find('[name="xs-title"]').val();
+		x.x = container.find('[name="xs-x"]').val();
+		x.y = container.find('[name="xs-y"]').val();
+		result.push(x);
+	}
+	return result;
+}
+
 function populate() {
 	collectData();
 	updateConfig();
@@ -827,7 +946,7 @@ function constructMapFromConfig() {
 	$('#map .map').html('');
 	$('#map .figures').html('');
 	
-	for (var i = 0; i < config.tiles.length; i++) {
+	for (var i = 0; config.tiles != undefined && i < config.tiles.length; i++) {
 		var tile = config.tiles[i];
 		var tileObject = $('<div>');
 		var tileImage = $('<img>');
@@ -852,7 +971,45 @@ function constructMapFromConfig() {
 		$('#map .map').append(tileObject);
 	}
 	
-	for (var i = 0; i < config.monsters.length; i++) {
+	for (var i = 0; config.doors != undefined && i < config.doors.length; i++) {
+		var door = config.doors[i];
+		var doorObject = $('<div>');
+		var doorImage = $('<img>');
+		var folder = 'images/doors/';
+		doorObject.css({
+			'position' : 'absolute',
+			'left' : (door.x * cellSize).toString() + 'px',
+			'top' : (door.y * cellSize).toString() + 'px'
+		});
+		if (door.vertical) {
+			doorImage.css({
+				'-ms-transform' : 'rotate(90deg)',
+				'-webkit-transform' : 'rotate(90deg)',
+				'transform' : 'rotate(90deg)',
+				'transform-origin' : cellSize.toString() + 'px'
+			});
+		}
+		doorImage.attr('src', folder + door.title + '.png');
+		doorObject.append(doorImage);
+		$('#map .map').append(doorObject);
+	}
+	
+	for (var i = 0; config.xs != undefined && i < config.xs.length; i++) {
+		var xs = config.xs[i];
+		var xsObject = $('<div>');
+		var xsImage = $('<img>');
+		var folder = 'images/blocks/';
+		xsObject.css({
+			'position' : 'absolute',
+			'left' : (xs.x * cellSize).toString() + 'px',
+			'top' : (xs.y * cellSize).toString() + 'px'
+		});
+		xsImage.attr('src', folder + xs.title + '.png');
+		xsObject.append(xsImage);
+		$('#map .map').append(xsObject);
+	}
+	
+	for (var i = 0; config.monsters != undefined && i < config.monsters.length; i++) {
 		var monster = config.monsters[i];
 		var monsterObject = $('<div>');
 		var monsterImage = $('<img>');
@@ -899,7 +1056,7 @@ function addHeroToMap(hero) {
 			'top' : '-' + (3 * cellSize).toString() + 'px',
 			'width' : (7 * cellSize).toString() + 'px',
 			'height' : (7 * cellSize).toString() + 'px',
-			'border' : '2px solid gold',
+			'border' : '2px dashed gold',
 			'border-radius' : (cellSize / 2).toString() + 'px'
 		});
 		heroObject.append(aura);
@@ -993,6 +1150,29 @@ function constructSettingsFromConfig() {
 			updateAngle(container.find('.select-angle li')[0], tile.angle);
 		}
 	}
+	if (config.doors != undefined) {
+		for (var i = 0 ; i < config.doors.length; i++) {
+			var container = addDoorLine();
+			var door = config.doors[i];
+			updateDoor(container.find('.select-door li')[0], door.title);
+			updateDirection(container.find('.select-direction li')[0], door.vertical ? 'vertical' : 'horizontal');
+			container.find('[name="door-x"]').val(door.x);
+			container.find('.x-title').html(getAlphabetChar(door.x - 1) + ' ');
+			container.find('[name="door-y"]').val(door.y);
+			container.find('.y-title').html(door.y.toString() + ' ');
+		}
+	}
+	if (config.xs != undefined) {
+		for (var i = 0 ; i < config.xs.length; i++) {
+			var container = addXsLine();
+			var xs = config.xs[i];
+			updateXs(container.find('.select-xs li')[0], xs.title);
+			container.find('[name="xs-x"]').val(xs.x);
+			container.find('.x-title').html(getAlphabetChar(xs.x - 1) + ' ');
+			container.find('[name="xs-y"]').val(xs.y);
+			container.find('.y-title').html(xs.y.toString() + ' ');
+		}
+	}
 }
 
 function updateConfig() {
@@ -1014,6 +1194,8 @@ function collectData() {
 	config.hero3 = hero($('#hero3 .select-row'));
 	config.hero4 = hero($('#hero4 .select-row'));
 	config.tiles = getMapTiles();
+	config.doors = getDoors();
+	config.xs = getXs();
 }
 
 function adjustAct() {
