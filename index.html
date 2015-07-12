@@ -19,7 +19,8 @@
 				<li role="presentation"><a href="#hero2" aria-controls="messages" role="tab" data-toggle="tab">Hero 2</a></li>
 				<li role="presentation"><a href="#hero3" aria-controls="messages" role="tab" data-toggle="tab">Hero 3</a></li>
 				<li role="presentation"><a href="#hero4" aria-controls="messages" role="tab" data-toggle="tab">Hero 4</a></li>
-				<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+				<li role="presentation"><a href="#familiars" aria-controls="messages" role="tab" data-toggle="tab">Allies and familiars</a></li>
+				<li role="presentation"><a href="#misc" aria-controls="settings" role="tab" data-toggle="tab">Miscellaneous objects</a></li>
 			</ul>
 			
 			<div class="tab-content">
@@ -53,7 +54,13 @@
 				<div role="tabpanel" class="tab-pane" id="hero2"></div>
 				<div role="tabpanel" class="tab-pane" id="hero3"></div>
 				<div role="tabpanel" class="tab-pane" id="hero4"></div>
-				<div role="tabpanel" class="tab-pane" id="settings">Under construction</div>
+				<div role="tabpanel" class="tab-pane" id="familiars">
+					<div id="xs-container"><h1>Allies</h1></div>
+					<button type="button" class="btn btn-success" aria-expanded="false" onclick="addAlly();">Add Ally</button>
+					<div id="xs-container"><h1>Familiars</h1></div>
+					<button type="button" class="btn btn-success" aria-expanded="false" onclick="addFamiliar();">Add Familiar</button>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="misc">Under constraction</div>
 			</div>
 		</div>
 	</body>

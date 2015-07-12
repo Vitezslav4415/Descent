@@ -608,9 +608,15 @@ for (var i = 0; i < HEROES_LIST.length; i++) {
 MONSTERS_LIST.sort(listsort);
 HEROES_LIST.sort(listsort);
 
-PETS = [
-	'brightblaze',
-	'reanimated'
+FAMILIARS_LIST = [
+	'Brightblaze',
+	'Kata',
+	'Mata',
+	'Pico',
+	'Reanimate',
+	'Shadow',
+	'Skye',
+	'Wolf'
 ];
 
 MAP_TILES_LIST = [
@@ -705,7 +711,8 @@ DOORS_LIST = [
 	'Door',
 	'Red Rune Blocked',
 	'Shrubbery',
-	'Yellow Rune Blocked'
+	'Yellow Rune Blocked',
+	'Portcullis'
 ];
 
 BLOCKS_LIST = [
