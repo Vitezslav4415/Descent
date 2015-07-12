@@ -89,6 +89,8 @@ function updateOption(element, value, isMonster) {
 			container.find('input[name="tile-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="door-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="xs-x"]').attr('value',selectedCoordinate);
+			container.find('input[name="ally-x"]').attr('value',selectedCoordinate);
+			container.find('input[name="familiar-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-x-size"]').attr('value',selectedSize);
 			container.find('.x-title').html($(element).html() + ' ');
 			if (!parent.hasClass('squared')) {
@@ -101,6 +103,8 @@ function updateOption(element, value, isMonster) {
 			container.find('input[name="tile-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="door-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="xs-y"]').attr('value',selectedCoordinate);
+			container.find('input[name="ally-y"]').attr('value',selectedCoordinate);
+			container.find('input[name="familiar-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-y-size"]').attr('value',selectedSize);
 			if (!parent.hasClass('squared')) {
 				container.find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
@@ -388,6 +392,30 @@ function clearXs(element) {
 	container.find('input[name="xs-title"]').attr('value','');
 }
 
+function updateAlly(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.ally-title').html(value + ' ');
+	container.find('input[name="ally-title"]').attr('value',value);
+}
+
+function clearAlly(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.ally-title').html('Select Ally ');
+	container.find('input[name="ally-title"]').attr('value','');
+}
+
+function updateFamiliar(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.familiar-title').html(value + ' ');
+	container.find('input[name="familiar-title"]').attr('value',value);
+}
+
+function clearFamiliar(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.familiar-title').html('Select Familiar ');
+	container.find('input[name="familiar-title"]').attr('value','');
+}
+
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
 }
@@ -613,6 +641,22 @@ function createXsSelectContent() {
 	return html;
 }
 
+function createAlliesSelectContent() {
+	var html = addOption('Clear', '', 'clearAlly(this);');
+	for (var i = 0; i < ALLIES_LIST.length; i++) {
+		html += addOption(ALLIES_LIST[i] + ' ', '', 'updateAlly(this, \'' + ALLIES_LIST[i] + '\')');
+	}
+	return html;
+}
+
+function createFamiliarsSelectContent() {
+	var html = addOption('Clear', '', 'clearFamiliar(this);');
+	for (var i = 0; i < FAMILIARS_LIST.length; i++) {
+		html += addOption(FAMILIARS_LIST[i] + ' ', '', 'updateFamiliar(this, \'' + FAMILIARS_LIST[i] + '\')');
+	}
+	return html;
+}
+
 function addUnitLine(line, title) {
 	line.addClass('select-row');
 	line.append(createInputSelect('Select ' + title, title.toLowerCase() + '-title', 'select-' + title.toLowerCase()));
@@ -705,6 +749,28 @@ function addXsLine() {
 	xLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
 	$('#xs-container').append(xLine);
 	return xLine;
+}
+
+function addAllyLine() {
+	var ally = $('<div>');
+	addUnitLine(ally, 'Ally');
+	
+	ally.find('.select-ally ul').append(createAlliesSelectContent());
+	ally.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
+	ally.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	$('#allies-container').append(ally);
+	return ally;
+}
+
+function addFamiliarLine() {
+	var familiar = $('<div>');
+	addUnitLine(familiar, 'Familiar');
+	
+	familiar.find('.select-familiar ul').append(createFamiliarsSelectContent());
+	familiar.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
+	familiar.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	$('#familiars-container').append(familiar);
+	return familiar;
 }
 
 function createSkillsBlock() {
@@ -931,6 +997,36 @@ function getXs() {
 		x.x = container.find('[name="xs-x"]').val();
 		x.y = container.find('[name="xs-y"]').val();
 		result.push(x);
+	}
+	return result;
+}
+
+function getAllies() {
+	var result = [];
+	var allies = $('#allies-container .select-row');
+	for (var i = 0; i < allies.length; i++) {
+		var container = $(allies[i]);
+		var ally = {};
+		ally.title = container.find('[name="ally-title"]').val();
+		ally.x = container.find('[name="ally-x"]').val();
+		ally.y = container.find('[name="ally-y"]').val();
+		ally.hp = container.find('[name="ally-hp"]').val();
+		result.push(ally);
+	}
+	return result;
+}
+
+function getFamiliars() {
+	var result = [];
+	var familiars = $('#familiars-container .select-row');
+	for (var i = 0; i < familiars.length; i++) {
+		var container = $(familiars[i]);
+		var familiar = {};
+		familiar.title = container.find('[name="familiar-title"]').val();
+		familiar.x = container.find('[name="familiar-x"]').val();
+		familiar.y = container.find('[name="familiar-y"]').val();
+		familiar.hp = container.find('[name="familiar-hp"]').val();
+		result.push(familiar);
 	}
 	return result;
 }
@@ -1173,6 +1269,30 @@ function constructSettingsFromConfig() {
 			container.find('.y-title').html(xs.y.toString() + ' ');
 		}
 	}
+	if (config.allies != undefined) {
+		for (var i = 0 ; i < config.allies.length; i++) {
+			var container = addAllyLine();
+			var ally = config.allies[i];
+			updateAlly(container.find('.select-ally li')[0], ally.title);
+			container.find('[name="ally-x"]').val(ally.x);
+			container.find('.x-title').html(getAlphabetChar(ally.x - 1) + ' ');
+			container.find('[name="ally-y"]').val(ally.y);
+			container.find('.y-title').html(ally.y.toString() + ' ');
+			container.find('[name="ally-hp"]').val(ally.hp);
+		}
+	}
+	if (config.familiars != undefined) {
+		for (var i = 0 ; i < config.familiars.length; i++) {
+			var container = addFamiliarLine();
+			var ally = config.familiars[i];
+			updateFailiar(container.find('.select-familiar li')[0], familiar.title);
+			container.find('[name="familiar-x"]').val(familiar.x);
+			container.find('.x-title').html(getAlphabetChar(familiar.x - 1) + ' ');
+			container.find('[name="familiar-y"]').val(familiar.y);
+			container.find('.y-title').html(familiar.y.toString() + ' ');
+			container.find('[name="familiar-hp"]').val(familiar.hp);
+		}
+	}
 }
 
 function updateConfig() {
@@ -1196,6 +1316,8 @@ function collectData() {
 	config.tiles = getMapTiles();
 	config.doors = getDoors();
 	config.xs = getXs();
+	config.allies = getAllies();
+	config.familiars = getFamiliars();
 }
 
 function adjustAct() {
