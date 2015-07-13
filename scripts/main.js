@@ -1124,6 +1124,42 @@ function constructMapFromConfig() {
 		$('#map .figures').append(monsterObject);
 	}
 	
+	for (var i = 0; config.allies != undefined && i < config.allies.length; i++) {
+		var ally = config.allies[i];
+		var allyObject = $('<div>');
+		var allyImage = $('<img>');
+		var allyHp = $('<div>').addClass('hit-points');
+		allyHp.html(ally.hp.toString());
+		var folder = 'images/allies_tokens/';
+		allyObject.css({
+			'position' : 'absolute',
+			'left' : (ally.x * cellSize).toString() + 'px',
+			'top' : (ally.y * cellSize).toString() + 'px'
+		});
+		allyImage.attr('src', folder + ally.title.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.png');
+		allyObject.append(allyImage);
+		allyObject.append(allyHp);
+		$('#map .figures').append(allyObject);
+	}
+	
+	for (var i = 0; config.familiars != undefined && i < config.familiars.length; i++) {
+		var familiar = config.familiars[i];
+		var familiarObject = $('<div>');
+		var familiarImage = $('<img>');
+		var familiarHp = $('<div>').addClass('hit-points');
+		familiarHp.html(familiar.hp.toString());
+		var folder = 'images/familiars_tokens/';
+		familiarObject.css({
+			'position' : 'absolute',
+			'left' : (familiar.x * cellSize).toString() + 'px',
+			'top' : (familiar.y * cellSize).toString() + 'px'
+		});
+		familiarImage.attr('src', folder + familiar.title.replace(new RegExp(" ",'g'), '_').toLowerCase() + '.png');
+		familiarObject.append(familiarImage);
+		familiarObject.append(familiarHp);
+		$('#map .figures').append(familiarObject);
+	}
+	
 	addHeroToMap(config.hero1);
 	addHeroToMap(config.hero2);
 	addHeroToMap(config.hero3);
@@ -1284,8 +1320,8 @@ function constructSettingsFromConfig() {
 	if (config.familiars != undefined) {
 		for (var i = 0 ; i < config.familiars.length; i++) {
 			var container = addFamiliarLine();
-			var ally = config.familiars[i];
-			updateFailiar(container.find('.select-familiar li')[0], familiar.title);
+			var familiar = config.familiars[i];
+			updateFamiliar(container.find('.select-familiar li')[0], familiar.title);
 			container.find('[name="familiar-x"]').val(familiar.x);
 			container.find('.x-title').html(getAlphabetChar(familiar.x - 1) + ' ');
 			container.find('[name="familiar-y"]').val(familiar.y);
@@ -1320,6 +1356,29 @@ function collectData() {
 	config.familiars = getFamiliars();
 }
 
+function drawGrid() {
+	for (var i = 0; i < mapWidth; i++) {
+		var element = $('<div>');
+		element.html(ALPHABET.charAt(i));
+		element.css({
+				'position' : 'absolute',
+				'left' : ((1 + i) * cellSize).toString() + 'px',
+				'top' : '0'
+		});
+		$('.grid').append(element);
+	}
+	for (var i = 0; i <= mapHeight; i++) {
+		var element = $('<div>');
+		element.html(i.toString());
+		element.css({
+				'position' : 'absolute',
+				'left' : '0',
+				'top' : ((1 + i) * cellSize).toString() + 'px'
+		});
+		$('.grid').append(element);
+	}
+}
+
 function adjustAct() {
 	actOne = $('[name="act"]:checked').val() == 'one';
 }
@@ -1329,6 +1388,7 @@ $(function() {
 	for (var i = 1; i <= 4; i++) {
 		addHeroLine(i);
 	}
+	drawGrid();
 	if (window.location.hash != "") {
 		decodeConfig();
 		constructMapFromConfig();
