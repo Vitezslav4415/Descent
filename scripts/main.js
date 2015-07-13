@@ -91,6 +91,7 @@ function updateOption(element, value, isMonster) {
 			container.find('input[name="xs-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="ally-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="familiar-x"]').attr('value',selectedCoordinate);
+			container.find('input[name="objective-x"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-x-size"]').attr('value',selectedSize);
 			container.find('.x-title').html($(element).html() + ' ');
 			if (!parent.hasClass('squared')) {
@@ -105,6 +106,7 @@ function updateOption(element, value, isMonster) {
 			container.find('input[name="xs-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="ally-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="familiar-y"]').attr('value',selectedCoordinate);
+			container.find('input[name="objective-y"]').attr('value',selectedCoordinate);
 			container.find('input[name="monster-y-size"]').attr('value',selectedSize);
 			if (!parent.hasClass('squared')) {
 				container.find('.select-x').removeClass(SHOWING_CLASSES[selectedSize]);
@@ -416,6 +418,18 @@ function clearFamiliar(element) {
 	container.find('input[name="familiar-title"]').attr('value','');
 }
 
+function updateObjective(element, value) {
+	var container = $(element).parents('.select-row');
+	container.find('.objective-title').html(value + ' ');
+	container.find('input[name="objective-title"]').attr('value',value);
+}
+
+function clearObjective(element) {
+	var container = $(element).parents('.select-row');
+	container.find('.objective-title').html('Select Objective ');
+	container.find('input[name="objective-title"]').attr('value','');
+}
+
 function removeRow(element) {
 	$(element).parents('.select-row').remove();
 }
@@ -657,6 +671,14 @@ function createFamiliarsSelectContent() {
 	return html;
 }
 
+function createObjectiveSelectContent() {
+	var html = addOption('Clear', '', 'clearObjective(this);');
+	for (var i = 0; i < OBJECTIVES_LIST.length; i++) {
+		html += addOption(OBJECTIVES_LIST[i] + ' ', '', 'updateObjective(this, \'' + OBJECTIVES_LIST[i] + '\')');
+	}
+	return html;
+}
+
 function addUnitLine(line, title) {
 	line.addClass('select-row');
 	line.append(createInputSelect('Select ' + title, title.toLowerCase() + '-title', 'select-' + title.toLowerCase()));
@@ -720,6 +742,7 @@ function addMapTileLine() {
 	mapTileLine.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
 	mapTileLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
 	mapTileLine.find('.select-angle ul').append(createAngleSelectContent());
+	mapTileLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	$('#tiles-container').append(mapTileLine);
 	return mapTileLine;
 }
@@ -735,6 +758,7 @@ function addDoorLine() {
 	doorLine.find('.select-direction ul').append(createDirectionSelectContent());
 	doorLine.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
 	doorLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	doorLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	$('#doors-container').append(doorLine);
 	return doorLine;
 }
@@ -747,6 +771,7 @@ function addXsLine() {
 	xLine.find('.select-xs ul').append(createXsSelectContent());
 	xLine.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
 	xLine.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	xLine.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	$('#xs-container').append(xLine);
 	return xLine;
 }
@@ -758,6 +783,7 @@ function addAllyLine() {
 	ally.find('.select-ally ul').append(createAlliesSelectContent());
 	ally.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
 	ally.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	ally.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	$('#allies-container').append(ally);
 	return ally;
 }
@@ -769,8 +795,22 @@ function addFamiliarLine() {
 	familiar.find('.select-familiar ul').append(createFamiliarsSelectContent());
 	familiar.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
 	familiar.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	familiar.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
 	$('#familiars-container').append(familiar);
 	return familiar;
+}
+
+function addObjectiveLine() {
+	var objective = $('<div>');
+	addUnitLine(objective, 'Objective');
+	objective.find('input[type="text"]').remove();
+	
+	objective.find('.select-objective ul').append(createObjectiveSelectContent());
+	objective.find('.select-x ul').addClass('showOneCell').append(createXSelectContent(true));
+	objective.find('.select-y ul').addClass('showOneCell').append(createYSelectContent(true));
+	objective.append($('<button type="button" class="btn btn-danger" aria-expanded="false" onclick="removeRow(this);">Remove row</button>'));
+	$('#objective-container').append(objective);
+	return objective;
 }
 
 function createSkillsBlock() {
@@ -1031,6 +1071,20 @@ function getFamiliars() {
 	return result;
 }
 
+function getObjectives() {
+	var result = [];
+	var objectives = $('#objective-container .select-row');
+	for (var i = 0; i < objectives.length; i++) {
+		var container = $(objectives[i]);
+		var objective = {};
+		objective.title = container.find('[name="objective-title"]').val();
+		objective.x = container.find('[name="objective-x"]').val();
+		objective.y = container.find('[name="objective-y"]').val();
+		result.push(objective);
+	}
+	return result;
+}
+
 function populate() {
 	collectData();
 	updateConfig();
@@ -1103,6 +1157,21 @@ function constructMapFromConfig() {
 		xsImage.attr('src', folder + xs.title + '.png');
 		xsObject.append(xsImage);
 		$('#map .map').append(xsObject);
+	}
+	
+	for (var i = 0; config.objectives != undefined && i < config.objectives.length; i++) {
+		var objective = config.objectives[i];
+		var objectiveObject = $('<div>');
+		var objectiveImage = $('<img>');
+		var folder = 'images/misc/objective_';
+		objectiveObject.css({
+			'position' : 'absolute',
+			'left' : (objective.x * cellSize).toString() + 'px',
+			'top' : (objective.y * cellSize).toString() + 'px'
+		});
+		objectiveImage.attr('src', folder + objective.title + '.png');
+		objectiveObject.append(objectiveImage);
+		$('#map .map').append(objectiveObject);
 	}
 	
 	for (var i = 0; config.monsters != undefined && i < config.monsters.length; i++) {
@@ -1329,6 +1398,17 @@ function constructSettingsFromConfig() {
 			container.find('[name="familiar-hp"]').val(familiar.hp);
 		}
 	}
+	if (config.objectives != undefined) {
+		for (var i = 0 ; i < config.objectives.length; i++) {
+			var container = addObjectiveLine();
+			var objective = config.objectives[i];
+			updateObjective(container.find('.select-objective li')[0], objective.title);
+			container.find('[name="familiar-x"]').val(objective.x);
+			container.find('.x-title').html(getAlphabetChar(objective.x - 1) + ' ');
+			container.find('[name="familiar-y"]').val(objective.y);
+			container.find('.y-title').html(objective.y.toString() + ' ');
+		}
+	}
 }
 
 function updateConfig() {
@@ -1354,6 +1434,7 @@ function collectData() {
 	config.xs = getXs();
 	config.allies = getAllies();
 	config.familiars = getFamiliars();
+	config.objectives = getObjectives();
 }
 
 function drawGrid() {
